@@ -1,26 +1,27 @@
 """Shared helpers. Contract: attack(batch, cfg, rng) -> (batch, poison_mask).
 
-Assumed batch: pandas DataFrame with record_id, event_time, label (0/1), feature columns.
-Attacks never mutate the input; they return a copy with `is_poisoned` set.
+Batch: pandas DataFrame with record_id, event_time, label (0/1), feature columns.
+Attacks never mutate the input. The returned mask is what THIS attack changed;
+the `is_poisoned` column accumulates across stacked attacks (prior | mask).
 """
 import numpy as np
-import pandas as pd
-
-META_COLS = {"record_id", "event_time", "label", "is_poisoned", "flagged"}
 
 
-def feature_cols(batch: pd.DataFrame, cfg: dict) -> list:
-    return cfg.get("features") or [c for c in batch.columns if c not in META_COLS]
+def compute_feature_std(clean_df, features) -> dict:
+    """Reference std from clean warm-up data, to pass as cfg['feature_std']."""
+    return {f: float(clean_df[f].std(ddof=0)) for f in features}
 
 
 def pick(candidates: np.ndarray, rate: float, rng: np.random.Generator) -> np.ndarray:
-    """Choose round(rate * len(candidates)) positions without replacement."""
-    k = int(round(rate * len(candidates)))
+    """Stochastic rounding: k = floor(rate*n + U[0,1)), so E[k] = rate*n even on tiny batches."""
+    n = len(candidates)
+    k = min(int(np.floor(rate * n + rng.random())), n)
     return rng.choice(candidates, size=k, replace=False) if k else np.array([], dtype=int)
 
 
-def finish(out: pd.DataFrame, idx: np.ndarray):
+def finish(out, idx: np.ndarray):
     mask = np.zeros(len(out), dtype=bool)
     mask[idx] = True
-    out["is_poisoned"] = mask
+    prior = out["is_poisoned"].to_numpy(dtype=bool) if "is_poisoned" in out.columns else False
+    out["is_poisoned"] = prior | mask
     return out, mask
