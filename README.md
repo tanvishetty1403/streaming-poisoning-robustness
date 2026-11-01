@@ -32,9 +32,12 @@ pip install -r requirements.txt
 ## Run the offline loop
 ```
 python -m src.pipeline.run_offline --dataset paysim --attack none --defense off
-python -m src.pipeline.run_offline --dataset paysim --attack flip_targeted --budget 0.5 --timing burst --defense on
+python -m src.pipeline.run_offline --dataset paysim --attack targeted_flip --budget 0.5 --timing burst --defense on
 ```
-Results are appended to `results/metrics.csv`.
+Attack names: `none, random_flip, targeted_flip, feature_shift, feature_scale, feature_noise, backdoor`.
+Timings: `uniform, burst, low_and_slow`. Defense: `off` or `on`.
+`budget` is the fraction of train-stream rows tampered with for `random_flip`, and the fraction of fraud rows for every other attack.
+Results are appended to `results/metrics.csv` (columns are listed in `contracts/CONTRACTS.md`).
 
 ## Tests
 ```
