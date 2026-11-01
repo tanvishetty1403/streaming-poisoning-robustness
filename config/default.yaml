@@ -14,12 +14,13 @@ defense:
   min_ref: 500              # robust_z: accepted rows needed before it judges against the reference
   class_conditional: true   # robust_z: compare a row with accepted rows of the SAME label (true fraud is not an outlier among fraud)
   min_ref_class: 30         # robust_z (class-conditional): accepted rows per class needed before that class is judged
-  trusted_windows: 1        # first N windows are assumed clean: accepted unchecked, used only to build the references
+  trusted_windows: 1        # first N windows are assumed clean: accepted unchecked, used only to build the references. Keep equal to attacks.clean_windows (attacks must not touch these windows)
   bootstrap_first_window: false  # robust_z (marginal mode, no trusted window): score the first window against its own median/MAD
   label_window: 20000       # label_loss: accepted rows the reference model is fit on
   label_min_ref: 2000       # label_loss: accepted rows needed before it may judge
   min_class: 20             # label_loss: rows of EACH class needed before it may judge
-  review_windows: null      # null = quarantined rows stay out; N = re-check after N windows and release if clean (needs a contract amendment)
+  review_windows: null      # DEFAULT null = strict contract (every row in exactly one output). N = release/discard after N windows; breaks the contract, needs an amendment, off for all reported runs
   label_col: isFraud        # the (possibly poisoned) label column
   time_col: step            # event-time column
-  features: null            # null = use the dataset featurizer; or a list of numeric columns
+  features: null            # null = the dataset featurizer (same matrix as the learner: log amounts, balance-identity residuals, one-hot type). Explicit list = raw columns instead (loses the residuals).
+  exclude: []               # extra columns to drop when no featurizer/list is used

@@ -43,7 +43,7 @@ def flip_labels(df, frac, seed=0, exclude=None):
 
 
 # ---------------- PaySim-shaped raw windows (for testing defend() with P1's real featurizer) ----------------
-def make_paysim(n=4000, seed=0, start=0, step0=1, steps=24):
+def make_paysim(n=4000, seed=0, start=0, step0=1, steps=24, fraud_frac=0.02):
     """Raw PaySim-like window: balances obey the usual identities; ~2% of TRANSFER/CASH_OUT rows are
     'drain' frauds (amount == old balance, new balance 0), so a model can learn the label."""
     r = np.random.default_rng(seed)
@@ -55,7 +55,7 @@ def make_paysim(n=4000, seed=0, start=0, step0=1, steps=24):
     new_d = np.where(types == "PAYMENT", 0.0, np.where(types == "CASH_IN", old_d, old_d + amt))
     fraud = np.zeros(n, dtype=int)
     cand = np.flatnonzero(np.isin(types, ["TRANSFER", "CASH_OUT"]))
-    f = r.choice(cand, size=max(1, int(0.02 * len(cand))), replace=False)
+    f = r.choice(cand, size=max(1, int(fraud_frac * len(cand))), replace=False)
     amt[f], new_o[f], fraud[f] = old_o[f], 0.0, 1
     df = pd.DataFrame({
         "step": r.integers(step0, step0 + steps, n), "type": types, "amount": amt,

@@ -40,10 +40,30 @@ def _ensemble(dets, X, y):
 
 
 def _features(batch, state):
-    fn = state.get("featurize")
-    if fn is not None:
-        return np.asarray(fn(batch), dtype=float)
+    """defense.features (explicit list) > the dataset featurizer (state['dataset']) > feature_cols.
+
+    The dataset is stored by NAME, not as a function, so `state` stays picklable.
+    """
+    if state["cfg"].get("features"):
+        return batch[list(state["cfg"]["features"])].to_numpy(dtype=float)
+    dataset = state.get("dataset")
+    if dataset:
+        from src.pipeline.data import featurize   # same featurizer as the learner
+        return np.asarray(featurize(batch, dataset), dtype=float)
     return batch[feature_cols(batch, state["cfg"])].to_numpy(dtype=float)
+
+
+def _status(dets, wid, trusted):
+    """Which detectors can judge right now (and for which classes). Lets a run show that the
+    defense is active instead of silently doing nothing."""
+    out = {}
+    for d in dets:
+        ref = getattr(d, "_ref", None)
+        if isinstance(ref, dict):
+            out[d.name] = {("all" if k is None else int(k)): len(v) for k, v in ref.items()}
+        else:
+            out[d.name] = {"ready": bool(d.ready)}
+    return {"window_id": wid, "trusted": wid < trusted, "ready": {d.name: bool(d.ready) for d in dets}, "ref_rows": out}
 
 
 def defense(batch: pd.DataFrame, state: dict):
@@ -75,6 +95,7 @@ def defense(batch: pd.DataFrame, state: dict):
     else:
         scores, top, per = _ensemble(dets, X, y)
     state["last_per_detector"] = per
+    state["status"] = _status(dets, wid, cfg["trusted_windows"])
     flagged = scores > 1.0
 
     quarantined = batch[flagged]

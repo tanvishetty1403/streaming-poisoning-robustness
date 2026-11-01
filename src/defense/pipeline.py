@@ -4,13 +4,12 @@
 
 `state` starts as {} and is filled on the first call. Optionally the runner may set
 state['dataset'] ('paysim' | 'ulb'); otherwise it is inferred from the columns. The window is
-featurized with the SAME featurizer as the learner (src.pipeline.data.featurize).
+featurized with the SAME featurizer as the learner (src.pipeline.data.featurize) unless
+defense.features lists explicit columns.
 """
 from pathlib import Path
 
 import yaml
-
-from src.pipeline.data import featurize
 
 from .core import defense, make_state
 
@@ -37,10 +36,8 @@ def infer_dataset(df) -> str:
 def defend(window_df, state: dict):
     if "quarantine" not in state:  # first call: state is {} (or only carries cfg / dataset)
         state.update(make_state(state.get("cfg") or load_defense_cfg()))
-    if "featurize" not in state:
-        dataset = state.get("dataset") or infer_dataset(window_df)
-        state["dataset"] = dataset
-        state["featurize"] = lambda d, _name=dataset: featurize(d, _name)
+    if not state.get("dataset") and not state["cfg"].get("features"):
+        state["dataset"] = infer_dataset(window_df)   # a name, so `state` can be pickled
     accepted, quarantined, scores = defense(window_df, state)
     state["last_scores"] = scores
     return accepted, quarantined, state

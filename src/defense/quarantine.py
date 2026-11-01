@@ -31,6 +31,7 @@ class Quarantine:
     def review(self, window_id: int, rescore, threshold: float):
         """Decide records whose review window has elapsed. Returns (released, discarded)."""
         keep, released, discarded = [], [], []
+        template = self._held[0][1].iloc[0:0] if self._held else pd.DataFrame()   # keeps the schema
         for due, recs, sc in self._held:
             if due > window_id:
                 keep.append((due, recs, sc))
@@ -44,9 +45,8 @@ class Quarantine:
             released.append(recs[ok])
             discarded.append(recs[~ok])
         self._held = keep
-        empty = pd.DataFrame()
-        return (pd.concat(released) if released else empty,
-                pd.concat(discarded) if discarded else empty)
+        return (pd.concat(released) if released else template,
+                pd.concat(discarded) if discarded else template)
 
     @property
     def n_held(self) -> int:

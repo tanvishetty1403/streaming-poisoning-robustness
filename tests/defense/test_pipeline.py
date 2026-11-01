@@ -1,5 +1,6 @@
 """Contract tests for defend() (contracts/CONTRACTS.md section 3), using P1's real featurizer."""
 import numpy as np
+import pandas as pd
 import pytest
 
 from src.defense import defend
@@ -84,3 +85,66 @@ def test_audit_log_and_scores_are_kept_in_state():
     held = [e for e in state["quarantine"].log if e["event"] == "held" and e["window_id"] == 1]
     assert len(held) == len(quarantined) and all(e["detector"] for e in held)
     assert len(state["last_scores"]) == len(w) and set(state["last_per_detector"]) == {"robust_z", "label_loss"}
+
+
+# ---------------- review of PR #5 ----------------
+def test_default_config_is_strict_contract_mode():
+    assert load_defense_cfg()["review_windows"] is None          # every row in exactly one output
+
+
+def test_state_is_picklable():
+    import pickle
+    state = {}
+    defend(make_paysim(2000, seed=0), state)
+    state2 = pickle.loads(pickle.dumps(state))
+    w = make_paysim(2000, seed=1, start=2000, step0=25)
+    a1, q1, _ = defend(w, state)
+    a2, q2, _ = defend(w, state2)
+    assert len(a1) == len(a2) and set(q1["record_id"]) == set(q2["record_id"])
+
+
+def test_review_with_nothing_released_keeps_the_schema():
+    from src.defense.quarantine import Quarantine
+    q = Quarantine(review_windows=2)
+    recs = make_paysim(50, seed=0)
+    q.hold(recs, np.ones(len(recs)), window_id=0)
+    released, discarded = q.review(1, lambda r: np.zeros(len(r)), 1.0)     # not due yet
+    assert list(released.columns) == list(recs.columns) and len(released) == 0
+    pd.concat([recs, released])                                            # concat keeps the schema
+
+
+def test_default_features_skip_constant_and_raw_columns():
+    from src.defense.common import feature_cols
+    df = make_paysim(100, seed=0)
+    df["Time"] = 5.0
+    cols = feature_cols(df, {"label_col": "isFraud", "time_col": "step"})
+    assert not {"isFlaggedFraud", "Time", "isFraud", "step", "record_id"} & set(cols)
+
+
+def test_featurizer_output_has_no_label_time_or_id():
+    from src.pipeline.data import featurize
+    w = make_paysim(500, seed=0)
+    X = featurize(w, "paysim")
+    assert X.shape == (500, 12)                                           # amounts, balances, residuals, one-hot type
+    for col in ("isFraud", "step", "record_id"):                          # none of them equals a feature column
+        assert not any(np.array_equal(X[:, i], w[col].to_numpy(dtype=float)) for i in range(X.shape[1]))
+
+
+def test_explicit_features_override_the_featurizer():
+    cfg = {**load_defense_cfg(), "features": ["amount", "oldbalanceOrg"], "trusted_windows": 0}
+    state = {"cfg": cfg}
+    defend(make_paysim(2000, seed=0), state)
+    assert state["detectors"][0]._ref[0].shape[1] == 2
+
+
+def test_detectors_activate_at_the_real_fraud_rate():
+    """PaySim ~0.13% fraud, ~20k rows per 24-step window at sample_frac 0.1 -> ~26 fraud per window."""
+    state = {}
+    seen = []
+    for k in range(4):
+        w = make_paysim(20000, seed=k, start=20000 * k, step0=1 + 24 * k, fraud_frac=0.003)
+        defend(w, state)
+        seen.append((int(w["isFraud"].sum()), dict(state["status"]["ready"])))
+    print("fraud per window, detectors ready after window k:", seen)
+    assert 20 <= seen[0][0] <= 35
+    assert seen[-1][1] == {"robust_z": True, "label_loss": True}
