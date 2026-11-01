@@ -24,6 +24,8 @@ sys.path.insert(0, str(ROOT))
 from src.attacks import attack_from_config, load_config  # noqa: E402
 from src.pipeline import data as pipeline_data  # noqa: E402
 
+GZ = {"method": "gzip", "compresslevel": 1}   # about 35% faster writes, slightly bigger files
+
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -45,24 +47,30 @@ def main():
     if a.input:
         setattr(pipeline_data, "PAYSIM" if a.dataset == "paysim" else "ULB", a.input)
 
+    print("loading dataset...", flush=True) 
     full = pipeline_data.load_dataset(a.dataset, ds, a.seed)
     stream, test = pipeline_data.split_stream_test(full, ds["test_from_step"])
     win0 = ((stream["step"] - stream["step"].min()) // ds["window_steps"] == 0).to_numpy()   # P1's replay window 0
+    print(f"loaded {len(full)} rows; stream {len(stream)}, fraud {int(stream['isFraud'].sum())}", flush=True)
 
     names = a.attacks or list(config["attacks"]["methods"])
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
-    stream.to_csv(out / "stream_clean.csv.gz", index=False)
-    test.to_csv(out / "test_clean.csv.gz", index=False)
+    print("writing clean files...", flush=True)   
+    stream.to_csv(out / "stream_clean.csv.gz", index=False, compression=GZ)
+    test.to_csv(out / "test_clean.csv.gz", index=False, compression=GZ)
 
     rows = []
-    for name, b, t in itertools.product(names, a.budgets, a.timings):
+    combos = list(itertools.product(names, a.budgets, a.timings))
+    for i, (name, b, t) in enumerate(combos, 1):
         poisoned, mask = attack_from_config(stream, name, b, t, a.seed, a.dataset, config)
         f = f"{name}_b{b:g}_{t}_s{a.seed}.csv.gz"
-        poisoned.assign(is_poisoned=mask).to_csv(out / f, index=False)
+        poisoned.assign(is_poisoned=mask).to_csv(out / f, index=False, compression=GZ)
+        print(f"[{i}/{len(combos)}] {f}", flush=True)
         rows.append({"file": f, "dataset": a.dataset, "attack": name, "budget": b, "timing": t, "seed": a.seed,
                      "n_stream_rows": len(stream), "n_stream_fraud": int(stream["isFraud"].sum()),
                      "n_poisoned": int(mask.sum()), "n_poisoned_window0": int(mask[win0].sum())})
+        pd.DataFrame(rows).to_csv(out / "manifest.csv", index=False)
     manifest = pd.DataFrame(rows)
     manifest.to_csv(out / "manifest.csv", index=False)
     print(manifest.to_string(index=False))
