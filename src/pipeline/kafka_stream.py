@@ -1,30 +1,42 @@
 """Kafka version of the offline loop.
 
-Producer replays the (attacked) stream into a fresh 3-partition topic, key = nameOrig,
-so one account always lands on one partition. Each record carries its window id.
-After each window the producer sends a window-end marker to every partition; the
-consumer closes window k only after seeing the marker from all partitions, then does
-exactly what the offline loop does. --check compares the result with the offline run.
+Producer replays the (attacked) train stream into a fresh 3-partition topic.
+Key = nameOrig for PaySim, record_id for datasets without accounts (ULB), so records
+spread over partitions either way. After each event-time window the producer sends a
+window-end marker to every partition; the consumer closes window k only after it has
+seen the marker from all partitions, then runs the SAME StreamRun code as the offline
+loop (src/pipeline/core.py). --check runs the offline loop on the same data and compares.
 """
 import argparse
 import json
 import threading
+import time
 import uuid
 
 import numpy as np
-import pandas as pd
 import yaml
 from confluent_kafka import Consumer, Producer
 from confluent_kafka.admin import AdminClient, NewTopic
 
-from src.pipeline.data import load_dataset, split_stream_test, featurize
-from src.pipeline.learner import OnlineLearner
-from src.pipeline.metrics import eval_clean, eval_detection
+from src.pipeline.core import StreamRun, prepare_run, records_to_window
+from src.pipeline.data import load_dataset
 from src.pipeline.replay import replay_windows
-from src.pipeline.run_offline import (COLUMNS, append_csv, get_attack, get_defense,
-                                      run_offline)
+from src.pipeline.run_offline import append_csv, run_offline
 
-PARTS, BROKER = 3, "localhost:9092"
+PARTS, BROKER, IDLE_TIMEOUT = 3, "localhost:9092", 120
+CHECK_COLS = ["window", "n_seen", "n_quarantined", "pr_auc", "recall", "f1", "det_precision",
+              "det_recall", "det_fpr", "time_to_detect", "backdoor_hit_rate"]
+
+
+def partition_key(rec):
+    """PaySim has accounts (nameOrig); ULB does not, so fall back to record_id."""
+    return str(rec["nameOrig"]) if "nameOrig" in rec else str(rec["record_id"])
+
+
+def _native(o):                       # json fallback for numpy scalars
+    if hasattr(o, "item"):
+        return o.item()
+    raise TypeError(type(o))
 
 
 def make_topic(topic):
@@ -35,51 +47,54 @@ def make_topic(topic):
 
 def produce(topic, poisoned, window_steps):
     p = Producer({"bootstrap.servers": BROKER, "linger.ms": 20, "enable.idempotence": True})
+
+    def send(value, key=None, partition=-1):
+        while True:
+            try:
+                p.produce(topic, key=key, value=value, partition=partition)
+                p.poll(0)
+                return
+            except BufferError:          # local queue full: wait for deliveries, retry
+                p.poll(0.5)
+
     for k, win in replay_windows(poisoned, window_steps):
         for rec in win.to_dict("records"):
             rec["_w"] = k
-            key = str(rec.get("nameOrig", rec["record_id"]))
-            p.produce(topic, key=key, value=json.dumps(rec))
-            p.poll(0)
+            send(json.dumps(rec, default=_native), key=partition_key(rec))
         for part in range(PARTS):
-            p.produce(topic, partition=part, value=json.dumps({"_end": k}))
+            send(json.dumps({"_end": k}), partition=part)
         p.flush()
 
 
-def consume(topic, dataset, test, cfg, defense, meta, wids, seed, out):
-    lcfg = cfg["learner"]
-    c = Consumer({"bootstrap.servers": BROKER, "group.id": f"g-{uuid.uuid4().hex}",
-                  "auto.offset.reset": "earliest"})
-    c.subscribe([topic])
-    X_test, y_test = featurize(test, dataset), test["isFraud"].to_numpy()
-    learner, defend, state = OnlineLearner(lcfg["fraud_weight"], seed), get_defense(defense), {}
-    bufs, ends, rows, n_seen, i = {}, {}, [], 0, 0
-    while i < len(wids):
-        m = c.poll(1.0)
-        if m is None or m.error():
-            continue
-        rec = json.loads(m.value())
-        if "_end" in rec:
-            ends.setdefault(rec["_end"], set()).add(m.partition())
-        else:
-            bufs.setdefault(rec["_w"], []).append(rec)
-        while i < len(wids) and len(ends.get(wids[i], ())) == PARTS:   # window complete on all partitions
-            k = wids[i]
-            win = pd.DataFrame(bufs.pop(k, [])).drop(columns="_w").sort_values("record_id")
-            visible = win.drop(columns=["is_poisoned"])
-            accepted, quarantined, state = defend(visible, state)
-            acc = win[win["record_id"].isin(accepted["record_id"])]
-            learner.partial_fit(featurize(acc, dataset), acc["isFraud"].to_numpy())
-            n_seen += len(win)
-            row = dict(meta, run_id="kafka", window=k, step_end=int(win["step"].max()),
-                       n_seen=n_seen, n_quarantined=len(quarantined))
-            row.update(eval_clean(learner, X_test, y_test, lcfg["threshold"]))
-            row.update(eval_detection(win, quarantined) if defense != "off"
-                       else {"det_precision": np.nan, "det_recall": np.nan})
-            rows.append(row)
-            i += 1
-    c.close()
-    out["df"] = pd.DataFrame(rows, columns=COLUMNS)
+def consume(topic, run, wids, dtypes, out):
+    c = None
+    try:
+        c = Consumer({"bootstrap.servers": BROKER, "group.id": f"g-{uuid.uuid4().hex}",
+                      "auto.offset.reset": "earliest"})
+        c.subscribe([topic])
+        bufs, ends, i, last = {}, {}, 0, time.time()
+        while i < len(wids):
+            m = c.poll(1.0)
+            if m is None or m.error():
+                if time.time() - last > IDLE_TIMEOUT:
+                    raise TimeoutError(f"no Kafka messages for {IDLE_TIMEOUT}s")
+                continue
+            last = time.time()
+            rec = json.loads(m.value())
+            if "_end" in rec:
+                ends.setdefault(rec["_end"], set()).add(m.partition())
+            else:
+                bufs.setdefault(rec["_w"], []).append(rec)
+            while i < len(wids) and len(ends.get(wids[i], ())) == PARTS:   # window complete everywhere
+                k = wids[i]
+                run.step(k, records_to_window(bufs.pop(k), dtypes))
+                i += 1
+        out["df"] = run.result()
+    except Exception as e:               # surface thread errors to main()
+        out["error"] = e
+    finally:
+        if c is not None:
+            c.close()
 
 
 def main():
@@ -97,22 +112,20 @@ def main():
     dcfg = cfg["datasets"][a.dataset]
 
     df = load_dataset(a.dataset, dcfg, a.seed)
-    stream, test = split_stream_test(df, dcfg["test_from_step"])
-    poisoned, mask = get_attack(a.attack)(stream, budget=a.budget, timing=a.timing, seed=a.seed)
-    poisoned = poisoned.copy()
-    poisoned["is_poisoned"] = mask
+    # same prepare_run as the offline loop: apply_attack gets the identical train stream
+    poisoned, test, dcfg = prepare_run(a.dataset, a.attack, a.budget, a.timing, a.seed, cfg, data=df)
     wids = sorted(set(((poisoned["step"] - poisoned["step"].min()) // dcfg["window_steps"]).tolist()))
+    run = StreamRun(a.dataset, test, cfg, a.attack, a.budget, a.timing, a.defense, a.seed, "kafka")
 
-    topic = f"transactions-{uuid.uuid4().hex[:8]}"
+    topic = f"transactions-{uuid.uuid4().hex[:8]}"        # fresh topic per run
     make_topic(topic)
-    meta = {"dataset": a.dataset, "attack": a.attack, "budget": a.budget,
-            "timing": a.timing, "defense": a.defense, "seed": a.seed}
     out = {}
-    t = threading.Thread(target=consume, args=(topic, a.dataset, test, cfg, a.defense,
-                                               meta, wids, a.seed, out))
+    t = threading.Thread(target=consume, args=(topic, run, wids, poisoned.dtypes.to_dict(), out))
     t.start()
     produce(topic, poisoned, dcfg["window_steps"])
     t.join()
+    if "error" in out:
+        raise out["error"]
 
     kdf = out["df"]
     append_csv(kdf, cfg["results_csv"])
@@ -120,9 +133,12 @@ def main():
 
     if a.check:
         odf = run_offline(a.dataset, a.attack, a.budget, a.timing, a.defense, a.seed, cfg, data=df)
-        cols = ["window", "n_seen", "n_quarantined", "pr_auc", "recall", "f1"]
-        ok = np.allclose(kdf[cols].to_numpy(float), odf[cols].to_numpy(float), equal_nan=True, atol=1e-9)
+        ok = np.allclose(kdf[CHECK_COLS].to_numpy(float), odf[CHECK_COLS].to_numpy(float),
+                         equal_nan=True, atol=1e-9)
         print("KAFKA MATCHES OFFLINE" if ok else "MISMATCH between Kafka and offline runs")
+        if not ok:
+            diff = (kdf[CHECK_COLS].astype(float) - odf[CHECK_COLS].astype(float)).abs()
+            print("columns that differ:", [c for c in CHECK_COLS if (diff[c] > 1e-9).any()])
 
 
 if __name__ == "__main__":
