@@ -16,13 +16,16 @@ def eval_clean(learner, X_test, y_test, threshold=0.5):
 
 
 def eval_detection(window_df, quarantined_df):
-    """Quarantine precision/recall against ground-truth poison labels."""
-    truth = window_df["is_poisoned"].to_numpy()
-    if truth.sum() == 0:
-        return {"det_precision": np.nan, "det_recall": np.nan}
+    """Quarantine precision/recall/FPR against ground-truth poison labels."""
+    truth = window_df["is_poisoned"].to_numpy(dtype=bool)
     flagged = window_df["record_id"].isin(quarantined_df["record_id"]).to_numpy()
+    clean_n = (~truth).sum()
+    det_fpr = (flagged & ~truth).sum() / clean_n if clean_n else np.nan
+    if truth.sum() == 0:
+        return {"det_precision": np.nan, "det_recall": np.nan, "det_fpr": det_fpr}
     tp = (flagged & truth).sum()
     return {
         "det_precision": tp / flagged.sum() if flagged.sum() else 0.0,
         "det_recall": tp / truth.sum(),
+        "det_fpr": det_fpr,
     }
