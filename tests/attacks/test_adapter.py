@@ -91,3 +91,31 @@ def test_bad_inputs():
         run(make(), "random_flip", timing="sideways")
     with pytest.raises(ValueError):
         run(make(), "random_flip", budget=1.5)
+
+
+CONFIG_CW = {**CONFIG, "datasets": {"paysim": {"test_from_step": 800, "window_steps": 24}},
+             "attacks": {**CONFIG["attacks"], "clean_windows": 1}}
+
+
+@pytest.mark.parametrize("timing", TIMINGS)
+@pytest.mark.parametrize("name", NAMES)
+def test_clean_windows_untouched(name, timing):
+    df = make()
+    out, m = attack_from_config(df, name, 0.2, timing, 0, config=CONFIG_CW)
+    assert m[:24].sum() == 0 and m[800:].sum() == 0 and m.sum() > 0
+    pd.testing.assert_frame_equal(out[:24], df[:24])
+
+
+def test_clean_windows_budget_and_std():
+    df = make()
+    _, m = attack_from_config(df, "random_flip", 0.2, "uniform", 0, config=CONFIG_CW)
+    assert abs(m.sum() - 0.2 * (800 - 24)) <= 1                       # budget is relative to attackable rows
+    out, m = attack_from_config(df, "feature_shift", 0.2, "uniform", 0, config=CONFIG_CW)
+    want = 3.0 * df[df["step"] < 800][FLOATS].std(ddof=0).to_numpy()  # std still from ALL clean pre-test rows
+    assert np.allclose(out[FLOATS][m].to_numpy() - df[FLOATS][m].to_numpy(), want)
+
+
+@pytest.mark.parametrize("bad", [-1, 1.5, True, "24"])
+def test_bad_clean_until_step(bad):
+    with pytest.raises(ValueError):
+        attack(make(), 0.1, "uniform", 0, {"type": "random_label_flip"}, clean_until_step=bad)
