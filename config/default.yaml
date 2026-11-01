@@ -15,12 +15,17 @@ defense:
   ref_window: 20000         # robust_z: accepted rows kept as the reference
   min_ref: 500              # robust_z: accepted rows needed before it judges against the reference
   class_conditional: true   # robust_z: compare a row with accepted rows of the SAME label (true fraud is not an outlier among fraud)
-  min_ref_class: 30         # robust_z (class-conditional): accepted rows per class needed before that class is judged
+  min_ref_class: 15         # robust_z (class-conditional): accepted rows per class needed before that class is judged (real PaySim window 0 has only ~24 frauds)
   trusted_windows: 1        # first N windows are assumed clean: accepted unchecked, used only to build the references. Keep equal to attacks.clean_windows (attacks must not touch these windows)
   bootstrap_first_window: false  # robust_z (marginal mode, no trusted window): score the first window against its own median/MAD
   maha_quantile: 0.9999     # mahalanobis (optional detector, add to `detectors` to enable): a row is suspicious beyond this chi-square quantile
   maha_threshold: 3.0       # mahalanobis: scale on the normalised score; tuned on real PaySim (1.0 loses ~2% clean rows, 3.0 about 0.1%)
   maha_min_ref_class: 200   # mahalanobis: accepted rows per class needed before it judges
+  drift_alarm: true         # alarm when a window's fraud-label rate is abnormally high; the minority-class references are then frozen
+  drift_z: 6.0              # drift alarm: Poisson z-score of the window fraud-label count above the baseline count
+  drift_min_ratio: 3.0      # drift alarm: and at least this many times the baseline count
+  drift_min_rows: 0         # drift alarm: ignore windows smaller than this
+  alarm_tighten: 1.5        # while the alarm is on, fraud-labelled rows are scored this many times more strictly (1 = off)
   label_window: 20000       # label_loss: accepted rows the reference model is fit on
   label_min_ref: 2000       # label_loss: accepted rows needed before it may judge
   min_class: 20             # label_loss: rows of EACH class needed before it may judge
