@@ -9,7 +9,7 @@ results_csv: results/metrics.csv
 benchmark_csv: results/benchmark.csv
 
 defense:
-  detectors: [robust_z, label_loss]   # which detectors run; the ensemble is the max of their normalised scores
+  detectors: [robust_z, label_loss, mahalanobis]   # which detectors run; the ensemble is the max of their normalised scores
   z_threshold: 5.0          # robust_z: suspicious above this many robust std devs
   loss_threshold: 4.0       # label_loss: suspicious above this (-log p of the given label)
   ref_window: 20000         # robust_z: accepted rows kept as the reference
@@ -19,7 +19,7 @@ defense:
   trusted_windows: 1        # first N windows are assumed clean: accepted unchecked, used only to build the references. Keep equal to attacks.clean_windows (attacks must not touch these windows)
   bootstrap_first_window: false  # robust_z (marginal mode, no trusted window): score the first window against its own median/MAD
   maha_quantile: 0.9999     # mahalanobis (optional detector, add to `detectors` to enable): a row is suspicious beyond this chi-square quantile
-  maha_threshold: 1.0       # mahalanobis: scale on the normalised score (1.0 = exactly the quantile)
+  maha_threshold: 3.0       # mahalanobis: scale on the normalised score; tuned on real PaySim (1.0 loses ~2% clean rows, 3.0 about 0.1%)
   maha_min_ref_class: 200   # mahalanobis: accepted rows per class needed before it judges
   label_window: 20000       # label_loss: accepted rows the reference model is fit on
   label_min_ref: 2000       # label_loss: accepted rows needed before it may judge

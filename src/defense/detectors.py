@@ -97,8 +97,8 @@ class Mahalanobis:
 
     Catches what a per-feature z-score cannot: rows whose features are each plausible but whose
     COMBINATION is not (e.g. amount and balance moved against their usual correlation).
-    d2 = (x-mu)' S^-1 (x-mu) with S the shrunk covariance of the reference; constant columns are
-    dropped. score = d2 / chi2.ppf(quantile, k): above 1.0 = beyond the chosen quantile of a
+    d2 = (x-mu)' S^-1 (x-mu) with S the shrunk covariance of the reference; constant and 0/1
+    indicator columns are dropped (a rare category would otherwise be flagged as a whole). score = d2 / chi2.ppf(quantile, k): above 1.0 = beyond the chosen quantile of a
     k-dimensional Gaussian, so the threshold needs no per-dataset tuning (use `threshold` to scale).
     Class-conditional like RobustZ: a row is compared with accepted rows of the SAME label.
     """
@@ -125,7 +125,10 @@ class Mahalanobis:
             self._model.pop(key, None)
             return
         mu, sd = R.mean(axis=0), R.std(axis=0)
-        act = sd > 0
+        # constant columns and 0/1 indicator columns (one-hot categories) are left out: a rare
+        # category has a tiny variance, so its rows would all look like extreme outliers
+        binary = np.array([np.isin(R[:, j], (0.0, 1.0)).all() for j in range(R.shape[1])])
+        act = (sd > 0) & ~binary
         if act.sum() == 0:
             self._model.pop(key, None)
             return

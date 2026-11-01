@@ -138,7 +138,7 @@ def test_per_detector_scores_are_kept_for_ablation():
     run(st, make_labeled(3000, seed=0))
     run(st, make_labeled(500, seed=1, start=3000))
     per = st["last_per_detector"]
-    assert set(per) == {"robust_z", "label_loss"} and all(len(v) == 500 for v in per.values())
+    assert set(per) == {"robust_z", "label_loss", "mahalanobis"} and all(len(v) == 500 for v in per.values())
 
 
 # ---------------- quarantine and audit ----------------
@@ -179,7 +179,7 @@ def test_audit_log_records_which_detector_flagged_each_record():
     _, quar, _, _ = run(st, df)
     held = [e for e in st["quarantine"].log if e["event"] == "held"]
     assert sorted(e["record_id"] for e in held) == sorted(quar["record_id"])
-    assert all(e["detector"] in ("robust_z", "label_loss") for e in held)
+    assert all(e["detector"] in ("robust_z", "label_loss", "mahalanobis") for e in held)
 
 
 def test_detection_metrics_basic():

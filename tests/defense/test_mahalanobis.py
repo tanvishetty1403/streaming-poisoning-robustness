@@ -29,6 +29,7 @@ def break_correlation(df, frac, seed=0):
 
 
 def state(dets, **kw):
+    kw.setdefault("maha_threshold", 1.0)      # synthetic Gaussian data; the real-PaySim default is 3.0
     return make_state(cfgx(detectors=dets, class_conditional=False, trusted_windows=1, **kw))
 
 
@@ -73,3 +74,13 @@ def test_quarantined_rows_do_not_enter_the_reference():
     w, mask = break_correlation(correlated(3000, 1, start=3000), 1.0)
     _, quar, _, _ = run(st, w)
     assert len(st["detectors"][0]._ref[None]) == n0 + (len(w) - len(quar))
+
+
+def test_rare_category_indicator_is_not_an_outlier():
+    """A 0/1 one-hot column with a rare category (PaySim DEBIT ~1%) must not make its rows outliers."""
+    r = np.random.default_rng(0)
+    R = np.column_stack([r.normal(size=(5000, 3)), (r.random(5000) < 0.01).astype(float)])
+    d = Mahalanobis(1.0, 10000, 200, class_conditional=False)
+    d.update(R)
+    Y = np.column_stack([r.normal(size=(300, 3)), np.ones(300)])           # normal numeric values, rare category
+    assert (d.score(Y) > 1).mean() < 0.02

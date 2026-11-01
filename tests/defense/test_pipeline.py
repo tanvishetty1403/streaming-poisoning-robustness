@@ -84,7 +84,7 @@ def test_audit_log_and_scores_are_kept_in_state():
     _, quarantined, _ = defend(w, state)
     held = [e for e in state["quarantine"].log if e["event"] == "held" and e["window_id"] == 1]
     assert len(held) == len(quarantined) and all(e["detector"] for e in held)
-    assert len(state["last_scores"]) == len(w) and set(state["last_per_detector"]) == {"robust_z", "label_loss"}
+    assert len(state["last_scores"]) == len(w) and set(state["last_per_detector"]) == {"robust_z", "label_loss", "mahalanobis"}
 
 
 # ---------------- review of PR #5 ----------------
@@ -147,4 +147,4 @@ def test_detectors_activate_at_the_real_fraud_rate():
         seen.append((int(w["isFraud"].sum()), dict(state["status"]["ready"])))
     print("fraud per window, detectors ready after window k:", seen)
     assert 20 <= seen[0][0] <= 35
-    assert seen[-1][1] == {"robust_z": True, "label_loss": True}
+    assert all(seen[-1][1].values()) and {"robust_z", "label_loss"} <= set(seen[-1][1])
