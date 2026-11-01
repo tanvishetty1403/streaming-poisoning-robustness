@@ -1,0 +1,8 @@
+datasets:
+  paysim: {sample_frac: 0.1, test_from_step: 600, window_steps: 24}
+  ulb:    {sample_frac: 1.0, test_from_step: 36,  window_steps: 2}
+learner:
+  fraud_weight: 20.0
+  threshold: 0.5
+seeds: [0, 1, 2]
+results_csv: results/metrics.csv
