@@ -6,11 +6,8 @@ learner:
   threshold: 0.5
 seeds: [0, 1, 2]
 results_csv: results/metrics.csv
+benchmark_csv: results/benchmark.csv
 
-
-# Append to config/default.yaml
-attacks:
-  # Replace the whole `attacks:` block of config/default.yaml with this
 attacks:
   label_col: isFraud
   time_col: step
@@ -30,7 +27,3 @@ attacks:
   trigger:                      # backdoor pattern, stamped on poisoned fraud rows (labelled legit); tune so it is rare
     paysim: {amount: 9999.99, oldbalanceOrg: 9999.99}
     ulb: {V1: -6.0, V2: 6.0}
-
-
-
-    
