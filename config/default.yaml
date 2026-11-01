@@ -6,11 +6,27 @@ learner:
   threshold: 0.5
 seeds: [0, 1, 2]
 results_csv: results/metrics.csv
+benchmark_csv: results/benchmark.csv
 
+defense:
+  detectors: [robust_z, label_loss]   # which detectors run; the ensemble is the max of their normalised scores
+  z_threshold: 5.0          # robust_z: suspicious above this many robust std devs
+  loss_threshold: 4.0       # label_loss: suspicious above this (-log p of the given label)
+  ref_window: 20000         # robust_z: accepted rows kept as the reference
+  min_ref: 500              # robust_z: accepted rows needed before it judges against the reference
+  class_conditional: true   # robust_z: compare a row with accepted rows of the SAME label (true fraud is not an outlier among fraud)
+  min_ref_class: 30         # robust_z (class-conditional): accepted rows per class needed before that class is judged
+  trusted_windows: 1        # first N windows are assumed clean: accepted unchecked, used only to build the references. Keep equal to attacks.clean_windows (attacks must not touch these windows)
+  bootstrap_first_window: false  # robust_z (marginal mode, no trusted window): score the first window against its own median/MAD
+  label_window: 20000       # label_loss: accepted rows the reference model is fit on
+  label_min_ref: 2000       # label_loss: accepted rows needed before it may judge
+  min_class: 20             # label_loss: rows of EACH class needed before it may judge
+  review_windows: null      # DEFAULT null = strict contract (every row in exactly one output). N = release/discard after N windows; breaks the contract, needs an amendment, off for all reported runs
+  label_col: isFraud        # the (possibly poisoned) label column
+  time_col: step            # event-time column
+  features: null            # null = the dataset featurizer (same matrix as the learner: log amounts, balance-identity residuals, one-hot type). Explicit list = raw columns instead (loses the residuals).
+  exclude: []               # extra columns to drop when no featurizer/list is used
 
-# Append to config/default.yaml
-attacks:
-  # Replace the whole `attacks:` block of config/default.yaml with this
 attacks:
   label_col: isFraud
   time_col: step
@@ -30,7 +46,3 @@ attacks:
   trigger:                      # backdoor pattern, stamped on poisoned fraud rows (labelled legit); tune so it is rare
     paysim: {amount: 9999.99, oldbalanceOrg: 9999.99}
     ulb: {V1: -6.0, V2: 6.0}
-
-
-
-    
