@@ -6,9 +6,6 @@ learner:
   threshold: 0.5
 seeds: [0, 1, 2]
 results_csv: results/metrics.csv
-
-
-# Append to config/default.yaml
 attacks:
   label_col: isFraud
   time_col: step
@@ -23,6 +20,3 @@ attacks:
   features:                     # numeric columns only; check against P1's loader
     paysim: [amount, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest]
     ulb: [V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28, Amount]
-
-
-    
