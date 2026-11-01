@@ -14,7 +14,8 @@ def feature_poison(batch, cfg, rng):
         raise ValueError(f"features not in batch: {missing}")
     cand = np.arange(len(out))
     if cfg.get("target_label") is not None:
-        cand = np.flatnonzero(out["label"].to_numpy() == cfg["target_label"])
+        lc = cfg.get("label_col", "label")
+        cand = np.flatnonzero(out[lc].to_numpy() == cfg["target_label"])
     idx = pick(cand, cfg["rate"], rng)
     if len(idx):
         X = out[cols].to_numpy(dtype=float, copy=True)

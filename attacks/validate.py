@@ -16,6 +16,8 @@ def validate(cfg: dict) -> dict:
     rate = cfg.get("rate")
     if not _num(rate) or not 0.0 <= rate <= 1.0:
         raise ValueError(f"rate must be a number in [0, 1], got {rate!r}")
+    if not isinstance(cfg.get("label_col", "label"), str):
+        raise ValueError("label_col must be a string")
     if t == "feature_poison":
         mode = cfg.get("mode")
         if mode not in MODES:
