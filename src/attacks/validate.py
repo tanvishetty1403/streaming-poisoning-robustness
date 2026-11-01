@@ -1,4 +1,6 @@
 import math
+import numpy as np
+from .common import TIMINGS
 
 KNOWN_TYPES = {"random_label_flip", "targeted_label_flip", "feature_poison"}
 MODES = {"shift", "scale", "noise"}
@@ -16,6 +18,10 @@ def validate(cfg: dict) -> dict:
     rate = cfg.get("rate")
     if not _num(rate) or not 0.0 <= rate <= 1.0:
         raise ValueError(f"rate must be a number in [0, 1], got {rate!r}")
+    if cfg.get("timing", "uniform") not in TIMINGS:
+        raise ValueError(f"timing must be one of {TIMINGS}, got {cfg.get('timing')!r}")
+    if not isinstance(cfg.get("label_col", "isFraud"), str):
+        raise ValueError("label_col must be a string")
     if t == "feature_poison":
         mode = cfg.get("mode")
         if mode not in MODES:
@@ -29,6 +35,7 @@ def validate(cfg: dict) -> dict:
             fs = cfg.get("feature_std")
             if not isinstance(fs, dict) or any(f not in fs or not _num(fs[f]) or fs[f] < 0 for f in feats):
                 raise ValueError("shift/noise need cfg['feature_std'] (>= 0) for every feature")
-        if cfg.get("target_label") not in (None, 0, 1):
-            raise ValueError("target_label must be None, 0 or 1")
+        tl = cfg.get("target_label")
+        if tl is not None and (isinstance(tl, (bool, np.bool_)) or not isinstance(tl, (int, np.integer)) or tl not in (0, 1)):
+            raise ValueError(f"target_label must be exactly None, 0 or 1 (not a bool), got {tl!r}")
     return cfg

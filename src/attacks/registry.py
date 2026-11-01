@@ -1,7 +1,6 @@
 from .label_flip import random_label_flip, targeted_label_flip
 from .feature_poison import feature_poison
 from .validate import validate
-from .common import compute_feature_std
 
 ATTACKS = {
     "random_label_flip": random_label_flip,
@@ -10,7 +9,7 @@ ATTACKS = {
 }
 
 
-def attack(batch, cfg, rng):
-    """Contract entry point: validate cfg, then dispatch on cfg['type']."""
+def apply_attack(batch, cfg, rng):
+    """Low-level: validate cfg (incl. cfg['rate'], cfg['timing']), run one attack on `batch`."""
     validate(cfg)
     return ATTACKS[cfg["type"]](batch, cfg, rng)
