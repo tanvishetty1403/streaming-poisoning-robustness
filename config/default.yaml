@@ -1,4 +1,3 @@
-@"
 datasets:
   paysim: {sample_frac: 0.1, test_from_step: 600, window_steps: 24}
   ulb:    {sample_frac: 1.0, test_from_step: 36,  window_steps: 2}
@@ -23,6 +22,3 @@ attacks:
   features:                     # numeric columns only; check against P1's loader
     paysim: [amount, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest]
     ulb: [V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28, Amount]
-"@ | Set-Content -Encoding utf8 config\default.yaml
-
-Get-Content config\default.yaml
