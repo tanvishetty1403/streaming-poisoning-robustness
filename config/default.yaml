@@ -6,6 +6,8 @@ learner:
   threshold: 0.5
 seeds: [0, 1, 2]
 results_csv: results/metrics.csv
+benchmark_csv: results/benchmark.csv
+
 attacks:
   label_col: isFraud
   time_col: step
