@@ -30,14 +30,19 @@ defense:
 attacks:
   label_col: isFraud
   time_col: step
+  clean_windows: 1              # attacks skip the first N windows (defense trusts window 0)
   budgets: [0.01, 0.05, 0.10, 0.20]
   timings: [uniform, burst, low_and_slow]
-  methods:
+  methods:                      # budget: random_flip = fraction of train rows, all others = fraction of fraud rows
     random_flip:   {type: random_label_flip}
     targeted_flip: {type: targeted_label_flip}
-    feature_shift: {type: feature_poison, mode: shift, strength: 3.0}
-    feature_scale: {type: feature_poison, mode: scale, strength: 5.0}
-    feature_noise: {type: feature_poison, mode: noise, strength: 2.0}
+    feature_shift: {type: feature_poison, mode: shift, strength: 3.0, target_label: 1}
+    feature_scale: {type: feature_poison, mode: scale, strength: 5.0, target_label: 1}
+    feature_noise: {type: feature_poison, mode: noise, strength: 2.0, target_label: 1}
+    backdoor:      {type: backdoor}
   features:                     # numeric columns only; check against P1's loader
     paysim: [amount, oldbalanceOrg, newbalanceOrig, oldbalanceDest, newbalanceDest]
     ulb: [V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28, Amount]
+  trigger:                      # backdoor pattern, stamped on poisoned fraud rows (labelled legit); tune so it is rare
+    paysim: {amount: 9999.99, oldbalanceOrg: 9999.99}
+    ulb: {V1: -6.0, V2: 6.0}

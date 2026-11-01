@@ -2,7 +2,7 @@ import math
 import numpy as np
 from .common import TIMINGS
 
-KNOWN_TYPES = {"random_label_flip", "targeted_label_flip", "feature_poison"}
+KNOWN_TYPES = {"random_label_flip", "targeted_label_flip", "feature_poison", "backdoor"}
 MODES = {"shift", "scale", "noise"}
 
 
@@ -22,6 +22,10 @@ def validate(cfg: dict) -> dict:
         raise ValueError(f"timing must be one of {TIMINGS}, got {cfg.get('timing')!r}")
     if not isinstance(cfg.get("label_col", "isFraud"), str):
         raise ValueError("label_col must be a string")
+    if t == "backdoor":
+        trig = cfg.get("trigger")
+        if not isinstance(trig, dict) or not trig or any(not isinstance(k, str) or not _num(v) for k, v in trig.items()):
+            raise ValueError("backdoor requires a non-empty cfg['trigger'] dict {column: number}")
     if t == "feature_poison":
         mode = cfg.get("mode")
         if mode not in MODES:

@@ -7,22 +7,24 @@ CONFIG = {
     "datasets": {"paysim": {"test_from_step": 800}},
     "attacks": {
         "label_col": "isFraud", "time_col": "step", "features": {"paysim": FEATS},
+        "trigger": {"paysim": {"amount": 9999.99, "oldbalanceOrg": 9999.99}},
         "methods": {
             "random_flip": {"type": "random_label_flip"},
             "targeted_flip": {"type": "targeted_label_flip"},
-            "feature_shift": {"type": "feature_poison", "mode": "shift", "strength": 3.0},
-            "feature_scale": {"type": "feature_poison", "mode": "scale", "strength": 5.0},
-            "feature_noise": {"type": "feature_poison", "mode": "noise", "strength": 2.0},
+            "feature_shift": {"type": "feature_poison", "target_label": 1, "mode": "shift", "strength": 3.0},
+            "feature_scale": {"type": "feature_poison", "target_label": 1, "mode": "scale", "strength": 5.0},
+            "backdoor": {"type": "backdoor"},
+            "feature_noise": {"type": "feature_poison", "target_label": 1, "mode": "noise", "strength": 2.0},
         },
     },
 }
 NAMES, TIMINGS = list(CONFIG["attacks"]["methods"]), ["uniform", "burst", "low_and_slow"]
 
 
-def make(n=1000, seed=0):
+def make(n=1000, seed=0, step0=0):
     """PaySim-shaped frame (raw columns), event-time order."""
     r = np.random.default_rng(seed)
-    df = pd.DataFrame({"record_id": np.arange(n), "step": np.arange(n),
+    df = pd.DataFrame({"record_id": np.arange(n), "step": np.arange(n) + step0,
                        "type": r.choice(["PAYMENT", "TRANSFER"], n), "amount": r.lognormal(5, 1, n),
                        "nameOrig": [f"C{i}" for i in range(n)], "oldbalanceOrg": r.lognormal(7, 1, n),
                        "newbalanceOrig": r.lognormal(7, 1, n), "nameDest": [f"M{i}" for i in range(n)],
@@ -91,3 +93,53 @@ def test_bad_inputs():
         run(make(), "random_flip", timing="sideways")
     with pytest.raises(ValueError):
         run(make(), "random_flip", budget=1.5)
+
+
+CONFIG_CW = {**CONFIG, "datasets": {"paysim": {"test_from_step": 800, "window_steps": 24}},
+             "attacks": {**CONFIG["attacks"], "clean_windows": 1}}
+
+
+@pytest.mark.parametrize("timing", TIMINGS)
+@pytest.mark.parametrize("name", NAMES)
+def test_clean_windows_untouched(name, timing):
+    df = make()
+    out, m = attack_from_config(df, name, 0.2, timing, 0, config=CONFIG_CW)
+    assert m[:24].sum() == 0 and m[800:].sum() == 0 and m.sum() > 0
+    pd.testing.assert_frame_equal(out[:24], df[:24])
+
+
+def test_clean_windows_budget_and_std():
+    df = make()
+    _, m = attack_from_config(df, "random_flip", 0.2, "uniform", 0, config=CONFIG_CW)
+    assert abs(m.sum() - 0.2 * (800 - 24)) <= 1                       # budget is relative to attackable rows
+    out, m = attack_from_config(df, "feature_shift", 0.2, "uniform", 0, config=CONFIG_CW)
+    want = 3.0 * df[df["step"] < 800][FLOATS].std(ddof=0).to_numpy()  # std still from ALL clean pre-test rows
+    assert np.allclose(out[FLOATS][m].to_numpy() - df[FLOATS][m].to_numpy(), want)
+
+
+@pytest.mark.parametrize("bad", [-1, 1.5, True, "24"])
+def test_bad_clean_until_step(bad):
+    with pytest.raises(ValueError):
+        attack(make(), 0.1, "uniform", 0, {"type": "random_label_flip"}, clean_until_step=bad)
+
+
+@pytest.mark.parametrize("name", ["targeted_flip", "feature_shift", "feature_scale", "feature_noise", "backdoor"])
+def test_non_random_budget_is_fraction_of_fraud_rows(name):
+    df = make(); fraud = df[(df["step"] < 800) & (df["isFraud"] == 1)]
+    out, m = run(df, name, budget=0.5)
+    assert abs(m.sum() - 0.5 * len(fraud)) <= 1
+    assert (df["isFraud"][m] == 1).all()
+
+
+@pytest.mark.parametrize("step0", [0, 1, 5])           # real PaySim steps start at 1
+@pytest.mark.parametrize("timing", TIMINGS)
+@pytest.mark.parametrize("name", NAMES)
+def test_no_poison_in_window0_of_replay(name, timing, step0):
+    """Window 0 as P1's replay defines it: (step - min_step) // window_steps == 0."""
+    df = make(step0=step0)
+    win = ((df["step"] - df["step"].min()) // 24).to_numpy()
+    for seed in range(8):
+        out, m = attack_from_config(df, name, 0.5, timing, seed, config=CONFIG_CW)
+        assert m[win == 0].sum() == 0
+        pd.testing.assert_frame_equal(out[win == 0], df[win == 0])
+        assert m.sum() > 0 and m[(df["step"] >= 800).to_numpy()].sum() == 0
