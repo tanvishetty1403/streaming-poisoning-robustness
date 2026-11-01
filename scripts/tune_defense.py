@@ -92,12 +92,17 @@ def main():
     ap.add_argument("--z", nargs="+", type=float, help="z_threshold grid (default: config value)")
     ap.add_argument("--loss", nargs="+", type=float, help="loss_threshold grid (default: config value)")
     ap.add_argument("--detectors", nargs="+", help="e.g. robust_z label_loss mahalanobis (default: config)")
+    ap.add_argument("--set", nargs="+", default=[], metavar="KEY=VALUE", help="override any defense: key, e.g. min_ref_class=15 trusted_windows=1")
     ap.add_argument("--subgroups", action="store_true", help="also report clean-record loss by type / amount bucket")
     ap.add_argument("--out", default=str(ROOT / "results" / "defense_tuning.csv"))
     a = ap.parse_args()
 
     config = load_config(a.config)
     base = load_defense_cfg(a.config)
+    import yaml
+    for kv in a.set:
+        k, v = kv.split("=", 1)
+        base[k] = yaml.safe_load(v)
     ws = config["datasets"]["paysim"]["window_steps"]
     skip = {"stream_clean", "test_clean", "manifest"}
     files = sorted(f for f in Path(a.dir).glob("*.csv.gz") if f.name.split(".")[0] not in skip)

@@ -186,3 +186,14 @@ def test_detection_metrics_basic():
     m = detection_metrics([1, 1, 0, 0], [1, 0, 1, 0])
     assert (m["tp"], m["fp"], m["fn"], m["tn"]) == (1, 1, 1, 1)
     assert m["precision"] == 0.5 and m["recall"] == 0.5 and m["fpr"] == 0.5
+
+
+def test_label_detector_keeps_rare_fraud_rows_in_one_huge_window():
+    """PaySim window 0 has ~57k rows but only ~24 frauds; a shared rolling buffer of 20k rows kept ~8 of them."""
+    df = make_labeled(60000, seed=0)
+    df["label"] = 0
+    df.loc[df.index[:30], "label"] = 1                       # 30 rare frauds, all early in the window
+    df.loc[df.index[:30], "V1"] += 6.0                       # and separable
+    st = L(label_window=20000, label_min_ref=2000, min_class=20, trusted_windows=1)
+    run(st, df)
+    assert st["detectors"][0].ready

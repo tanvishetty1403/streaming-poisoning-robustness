@@ -176,8 +176,8 @@ class LabelConsistency:
     score = -log p(label | x). A record whose label the reference model confidently
     contradicts (a fraud-looking row labelled legit, or the reverse) scores high, which is
     the signature of a label flip. The model is class-balanced (fraud is rare) and refit on a
-    rolling window each time accepted records arrive. It stays silent (score 0) until the
-    window holds `min_ref` records with at least `min_class` of each class.
+    rolling window (kept per class, so rare fraud rows are not pushed out) each time accepted
+    records arrive. It stays silent (score 0) until the buffers hold `min_ref` records with at least `min_class` of each class.
     Limitation: flips of records near the decision boundary look normal and are not caught.
     """
     name = "label_loss"
@@ -185,26 +185,36 @@ class LabelConsistency:
 
     def __init__(self, threshold, window, min_ref, min_class):
         self.threshold, self.window, self.min_ref, self.min_class = threshold, window, min_ref, min_class
-        self._X = None
-        self._y = None
+        self._buf = {0: None, 1: None}   # accepted rows PER CLASS, newest `window` of each
         self._model = None
+
+    @property
+    def _y(self):
+        return np.concatenate([np.full(len(v), c) for c, v in self._buf.items() if v is not None]) if any(
+            v is not None for v in self._buf.values()) else None
 
     @property
     def ready(self) -> bool:
         return self._model is not None
 
     def update(self, X, y) -> None:
+        """Buffers are kept per class: fraud is ~0.1% of rows, so one shared rolling window would
+        hold only a handful of frauds (a single large window pushes them all out)."""
         if len(X) == 0:
             return
-        self._X = X if self._X is None else np.vstack([self._X, X])
-        self._y = y if self._y is None else np.concatenate([self._y, y])
-        self._X, self._y = self._X[-self.window:], self._y[-self.window:]
-        n1 = int((self._y == 1).sum())
-        n0 = len(self._y) - n1
-        if len(self._y) >= self.min_ref and min(n0, n1) >= self.min_class:
+        for c in (0, 1):
+            Xc = X[y == c]
+            if len(Xc):
+                self._buf[c] = Xc if self._buf[c] is None else np.vstack([self._buf[c], Xc])
+                self._buf[c] = self._buf[c][-self.window:]
+        n0 = 0 if self._buf[0] is None else len(self._buf[0])
+        n1 = 0 if self._buf[1] is None else len(self._buf[1])
+        if n0 + n1 >= self.min_ref and min(n0, n1) >= self.min_class:
+            Xf = np.vstack([self._buf[0], self._buf[1]])
+            yf = np.concatenate([np.zeros(n0, dtype=int), np.ones(n1, dtype=int)])
             self._model = make_pipeline(
                 StandardScaler(), LogisticRegression(class_weight="balanced", max_iter=200)
-            ).fit(self._X, self._y)
+            ).fit(Xf, yf)
 
     def score(self, X, y) -> np.ndarray:
         if self._model is None or len(X) == 0:
