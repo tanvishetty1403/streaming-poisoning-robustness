@@ -18,6 +18,9 @@ defense:
   min_ref_class: 30         # robust_z (class-conditional): accepted rows per class needed before that class is judged
   trusted_windows: 1        # first N windows are assumed clean: accepted unchecked, used only to build the references. Keep equal to attacks.clean_windows (attacks must not touch these windows)
   bootstrap_first_window: false  # robust_z (marginal mode, no trusted window): score the first window against its own median/MAD
+  maha_quantile: 0.9999     # mahalanobis (optional detector, add to `detectors` to enable): a row is suspicious beyond this chi-square quantile
+  maha_threshold: 1.0       # mahalanobis: scale on the normalised score (1.0 = exactly the quantile)
+  maha_min_ref_class: 200   # mahalanobis: accepted rows per class needed before it judges
   label_window: 20000       # label_loss: accepted rows the reference model is fit on
   label_min_ref: 2000       # label_loss: accepted rows needed before it may judge
   min_class: 20             # label_loss: rows of EACH class needed before it may judge

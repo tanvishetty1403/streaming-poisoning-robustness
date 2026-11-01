@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 from .common import assert_no_truth, feature_cols
-from .detectors import LabelConsistency, RobustZ
+from .detectors import LabelConsistency, Mahalanobis, RobustZ
 from .quarantine import Quarantine
 
 REQUIRED = ["detectors", "z_threshold", "loss_threshold", "ref_window", "min_ref",
@@ -25,6 +25,10 @@ def _build(cfg):
     if "robust_z" in cfg["detectors"]:
         dets.append(RobustZ(cfg["z_threshold"], cfg["ref_window"], cfg["min_ref"], cfg["bootstrap_first_window"],
                             cfg["class_conditional"], cfg["min_ref_class"]))
+    if "mahalanobis" in cfg["detectors"]:
+        dets.append(Mahalanobis(cfg.get("maha_threshold", 1.0), cfg.get("maha_window", cfg["ref_window"]),
+                                cfg["min_ref"], cfg.get("maha_quantile", 0.9999), cfg["class_conditional"],
+                                cfg.get("maha_min_ref_class", 200)))
     if "label_loss" in cfg["detectors"]:
         dets.append(LabelConsistency(cfg["loss_threshold"], cfg["label_window"], cfg["label_min_ref"], cfg["min_class"]))
     if not dets:

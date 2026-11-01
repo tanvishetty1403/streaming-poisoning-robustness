@@ -5,6 +5,7 @@
     score(X, y)   -> one raw suspicion score per record; a record is suspicious above `threshold`
 """
 import numpy as np
+from scipy.stats import chi2
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -88,6 +89,84 @@ class RobustZ:
             return self._z(X, self._stats[None])
         if self.bootstrap and len(X) >= self.min_ref:
             return self._z(X, _median_mad(X))
+        return out
+
+
+class Mahalanobis:
+    """Multivariate outlier score against a rolling reference of ACCEPTED records.
+
+    Catches what a per-feature z-score cannot: rows whose features are each plausible but whose
+    COMBINATION is not (e.g. amount and balance moved against their usual correlation).
+    d2 = (x-mu)' S^-1 (x-mu) with S the shrunk covariance of the reference; constant columns are
+    dropped. score = d2 / chi2.ppf(quantile, k): above 1.0 = beyond the chosen quantile of a
+    k-dimensional Gaussian, so the threshold needs no per-dataset tuning (use `threshold` to scale).
+    Class-conditional like RobustZ: a row is compared with accepted rows of the SAME label.
+    """
+    name = "mahalanobis"
+
+    def __init__(self, threshold, window, min_ref, quantile=0.9999, class_conditional=True,
+                 min_ref_class=200, shrinkage=1e-3):
+        self.threshold, self.window, self.min_ref = threshold, window, min_ref
+        self.quantile, self.class_conditional = quantile, class_conditional
+        self.min_ref_class, self.shrinkage = min_ref_class, shrinkage
+        self.needs_labels = class_conditional
+        self._ref, self._model = {}, {}
+
+    def _min(self) -> int:
+        return self.min_ref_class if self.class_conditional else self.min_ref
+
+    @property
+    def ready(self) -> bool:
+        return any(len(r) >= self._min() for r in self._ref.values())
+
+    def _fit(self, key):
+        R = self._ref[key]
+        if len(R) < self._min():
+            self._model.pop(key, None)
+            return
+        mu, sd = R.mean(axis=0), R.std(axis=0)
+        act = sd > 0
+        if act.sum() == 0:
+            self._model.pop(key, None)
+            return
+        Z = (R[:, act] - mu[act]) / sd[act]
+        S = np.cov(Z, rowvar=False).reshape(int(act.sum()), -1)
+        S = S + self.shrinkage * np.trace(S) / len(S) * np.eye(len(S))
+        self._model[key] = (mu, sd, act, np.linalg.pinv(S), chi2.ppf(self.quantile, int(act.sum())))
+
+    def _add(self, key, X):
+        ref = X if key not in self._ref else np.vstack([self._ref[key], X])
+        self._ref[key] = ref[-self.window:]
+        self._fit(key)
+
+    def update(self, X, y=None) -> None:
+        if len(X) == 0:
+            return
+        if self.class_conditional:
+            for c in (0, 1):
+                Xc = X[y == c]
+                if len(Xc):
+                    self._add(c, Xc)
+        else:
+            self._add(None, X)
+
+    def _d2(self, X, key):
+        mu, sd, act, P, crit = self._model[key]
+        Z = (X[:, act] - mu[act]) / sd[act]
+        return np.einsum("ij,jk,ik->i", Z, P, Z) / crit
+
+    def score(self, X, y=None) -> np.ndarray:
+        out = np.zeros(len(X))
+        if len(X) == 0:
+            return out
+        if self.class_conditional:
+            for c in (0, 1):
+                m = y == c
+                if m.any() and c in self._model:
+                    out[m] = self._d2(X[m], c)
+            return out
+        if None in self._model:
+            return self._d2(X, None)
         return out
 
 
