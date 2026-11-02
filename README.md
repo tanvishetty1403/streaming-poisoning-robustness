@@ -32,9 +32,25 @@ pip install -r requirements.txt
 ## Run the offline loop
 ```
 python -m src.pipeline.run_offline --dataset paysim --attack none --defense off
-python -m src.pipeline.run_offline --dataset paysim --attack flip_targeted --budget 0.5 --timing burst --defense on
+python -m src.pipeline.run_offline --dataset paysim --attack random_flip --budget 0.2 --timing uniform --defense on
 ```
-Results are appended to `results/metrics.csv`.
+Attacks: `random_flip`, `targeted_flip`, `feature_shift`, `feature_scale`, `feature_noise`, `backdoor`;
+timings: `uniform`, `burst`, `low_and_slow`. Results are appended to `results/metrics.csv`.
+
+## Run the full experiment (3 seeds, defense off and on)
+Needs `data/attacked_sample/stream_clean.csv.gz` and `test_clean.csv.gz` (`scripts/make_attacked_sample.py`), or the raw data.
+```
+python scripts/extend_attacked_samples.py --seeds 0 1 2            # attacked files for seeds 0 to 2
+python -m src.attacks.sweep --clean-dir data/attacked_sample       # results/metrics.csv (resumable)
+bash scripts/run_multiseed.sh                                      # detection, clean-record loss, subgroups
+bash scripts/run_ablation.sh                                       # detector ablation
+python scripts/collect_results.py                                  # results/summary/*.csv
+python scripts/build_notebook.py                                   # notebooks/defense_results.ipynb
+```
+
+## Defense results
+`notebooks/defense_results.ipynb` (PR-AUC with and without the defense, detector ablation, clean-record loss by group),
+`docs/model_data_card.md` (model and data card), `docs/report_defense_section.md` (the defense section of the report).
 
 ## Tests
 ```
