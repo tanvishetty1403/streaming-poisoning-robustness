@@ -5,6 +5,7 @@
     score(X, y)   -> one raw suspicion score per record; a record is suspicious above `threshold`
 """
 import numpy as np
+from scipy.stats import chi2
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
@@ -91,14 +92,95 @@ class RobustZ:
         return out
 
 
+class Mahalanobis:
+    """Multivariate outlier score against a rolling reference of ACCEPTED records.
+
+    Catches what a per-feature z-score cannot: rows whose features are each plausible but whose
+    COMBINATION is not (e.g. amount and balance moved against their usual correlation).
+    d2 = (x-mu)' S^-1 (x-mu) with S the shrunk covariance of the reference; constant and 0/1
+    indicator columns are dropped (a rare category would otherwise be flagged as a whole). score = d2 / chi2.ppf(quantile, k): above 1.0 = beyond the chosen quantile of a
+    k-dimensional Gaussian, so the threshold needs no per-dataset tuning (use `threshold` to scale).
+    Class-conditional like RobustZ: a row is compared with accepted rows of the SAME label.
+    """
+    name = "mahalanobis"
+
+    def __init__(self, threshold, window, min_ref, quantile=0.9999, class_conditional=True,
+                 min_ref_class=200, shrinkage=1e-3):
+        self.threshold, self.window, self.min_ref = threshold, window, min_ref
+        self.quantile, self.class_conditional = quantile, class_conditional
+        self.min_ref_class, self.shrinkage = min_ref_class, shrinkage
+        self.needs_labels = class_conditional
+        self._ref, self._model = {}, {}
+
+    def _min(self) -> int:
+        return self.min_ref_class if self.class_conditional else self.min_ref
+
+    @property
+    def ready(self) -> bool:
+        return any(len(r) >= self._min() for r in self._ref.values())
+
+    def _fit(self, key):
+        R = self._ref[key]
+        if len(R) < self._min():
+            self._model.pop(key, None)
+            return
+        mu, sd = R.mean(axis=0), R.std(axis=0)
+        # constant columns and 0/1 indicator columns (one-hot categories) are left out: a rare
+        # category has a tiny variance, so its rows would all look like extreme outliers
+        binary = np.array([np.isin(R[:, j], (0.0, 1.0)).all() for j in range(R.shape[1])])
+        act = (sd > 0) & ~binary
+        if act.sum() == 0:
+            self._model.pop(key, None)
+            return
+        Z = (R[:, act] - mu[act]) / sd[act]
+        S = np.cov(Z, rowvar=False).reshape(int(act.sum()), -1)
+        S = S + self.shrinkage * np.trace(S) / len(S) * np.eye(len(S))
+        self._model[key] = (mu, sd, act, np.linalg.pinv(S), chi2.ppf(self.quantile, int(act.sum())))
+
+    def _add(self, key, X):
+        ref = X if key not in self._ref else np.vstack([self._ref[key], X])
+        self._ref[key] = ref[-self.window:]
+        self._fit(key)
+
+    def update(self, X, y=None) -> None:
+        if len(X) == 0:
+            return
+        if self.class_conditional:
+            for c in (0, 1):
+                Xc = X[y == c]
+                if len(Xc):
+                    self._add(c, Xc)
+        else:
+            self._add(None, X)
+
+    def _d2(self, X, key):
+        mu, sd, act, P, crit = self._model[key]
+        Z = (X[:, act] - mu[act]) / sd[act]
+        return np.einsum("ij,jk,ik->i", Z, P, Z) / crit
+
+    def score(self, X, y=None) -> np.ndarray:
+        out = np.zeros(len(X))
+        if len(X) == 0:
+            return out
+        if self.class_conditional:
+            for c in (0, 1):
+                m = y == c
+                if m.any() and c in self._model:
+                    out[m] = self._d2(X[m], c)
+            return out
+        if None in self._model:
+            return self._d2(X, None)
+        return out
+
+
 class LabelConsistency:
     """Loss of each record's label under a reference model trained on ACCEPTED records.
 
     score = -log p(label | x). A record whose label the reference model confidently
     contradicts (a fraud-looking row labelled legit, or the reverse) scores high, which is
     the signature of a label flip. The model is class-balanced (fraud is rare) and refit on a
-    rolling window each time accepted records arrive. It stays silent (score 0) until the
-    window holds `min_ref` records with at least `min_class` of each class.
+    rolling window (kept per class, so rare fraud rows are not pushed out) each time accepted
+    records arrive. It stays silent (score 0) until the buffers hold `min_ref` records with at least `min_class` of each class.
     Limitation: flips of records near the decision boundary look normal and are not caught.
     """
     name = "label_loss"
@@ -106,26 +188,36 @@ class LabelConsistency:
 
     def __init__(self, threshold, window, min_ref, min_class):
         self.threshold, self.window, self.min_ref, self.min_class = threshold, window, min_ref, min_class
-        self._X = None
-        self._y = None
+        self._buf = {0: None, 1: None}   # accepted rows PER CLASS, newest `window` of each
         self._model = None
+
+    @property
+    def _y(self):
+        return np.concatenate([np.full(len(v), c) for c, v in self._buf.items() if v is not None]) if any(
+            v is not None for v in self._buf.values()) else None
 
     @property
     def ready(self) -> bool:
         return self._model is not None
 
     def update(self, X, y) -> None:
+        """Buffers are kept per class: fraud is ~0.1% of rows, so one shared rolling window would
+        hold only a handful of frauds (a single large window pushes them all out)."""
         if len(X) == 0:
             return
-        self._X = X if self._X is None else np.vstack([self._X, X])
-        self._y = y if self._y is None else np.concatenate([self._y, y])
-        self._X, self._y = self._X[-self.window:], self._y[-self.window:]
-        n1 = int((self._y == 1).sum())
-        n0 = len(self._y) - n1
-        if len(self._y) >= self.min_ref and min(n0, n1) >= self.min_class:
+        for c in (0, 1):
+            Xc = X[y == c]
+            if len(Xc):
+                self._buf[c] = Xc if self._buf[c] is None else np.vstack([self._buf[c], Xc])
+                self._buf[c] = self._buf[c][-self.window:]
+        n0 = 0 if self._buf[0] is None else len(self._buf[0])
+        n1 = 0 if self._buf[1] is None else len(self._buf[1])
+        if n0 + n1 >= self.min_ref and min(n0, n1) >= self.min_class:
+            Xf = np.vstack([self._buf[0], self._buf[1]])
+            yf = np.concatenate([np.zeros(n0, dtype=int), np.ones(n1, dtype=int)])
             self._model = make_pipeline(
                 StandardScaler(), LogisticRegression(class_weight="balanced", max_iter=200)
-            ).fit(self._X, self._y)
+            ).fit(Xf, yf)
 
     def score(self, X, y) -> np.ndarray:
         if self._model is None or len(X) == 0:

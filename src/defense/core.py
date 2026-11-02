@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 
 from .common import assert_no_truth, feature_cols
-from .detectors import LabelConsistency, RobustZ
+from .detectors import LabelConsistency, Mahalanobis, RobustZ
+from .drift import FraudRateAlarm
 from .quarantine import Quarantine
 
 REQUIRED = ["detectors", "z_threshold", "loss_threshold", "ref_window", "min_ref",
@@ -17,7 +18,9 @@ def make_state(cfg: dict) -> dict:
     if missing:
         raise KeyError(f"missing keys in the defense config: {missing}")
     return {"cfg": dict(cfg), "window_id": 0, "detectors": None,
-            "quarantine": Quarantine(cfg["review_windows"]), "last_per_detector": {}}
+            "quarantine": Quarantine(cfg["review_windows"]), "last_per_detector": {},
+            "alarm": FraudRateAlarm(cfg.get("drift_z", 6.0), cfg.get("drift_min_ratio", 3.0),
+                                    cfg.get("drift_min_rows", 0)), "alarmed": False}
 
 
 def _build(cfg):
@@ -25,6 +28,10 @@ def _build(cfg):
     if "robust_z" in cfg["detectors"]:
         dets.append(RobustZ(cfg["z_threshold"], cfg["ref_window"], cfg["min_ref"], cfg["bootstrap_first_window"],
                             cfg["class_conditional"], cfg["min_ref_class"]))
+    if "mahalanobis" in cfg["detectors"]:
+        dets.append(Mahalanobis(cfg.get("maha_threshold", 1.0), cfg.get("maha_window", cfg["ref_window"]),
+                                cfg["min_ref"], cfg.get("maha_quantile", 0.9999), cfg["class_conditional"],
+                                cfg.get("maha_min_ref_class", 200)))
     if "label_loss" in cfg["detectors"]:
         dets.append(LabelConsistency(cfg["loss_threshold"], cfg["label_window"], cfg["label_min_ref"], cfg["min_class"]))
     if not dets:
@@ -88,20 +95,32 @@ def defense(batch: pd.DataFrame, state: dict):
     y = batch[lc].to_numpy(dtype=int) if lc in batch.columns else None
     X = _features(batch, state)
 
+    alarm = False
+    if y is not None and cfg.get("drift_alarm", True):
+        alarm = state["alarm"].observe(len(batch), int((y == 1).sum()), trusted=wid < cfg["trusted_windows"])
+    state["alarmed"] = alarm
+
     if wid < cfg["trusted_windows"]:
         # Trusted warm-up (assumed clean): accept everything, only build the references.
         scores, top = np.zeros(len(batch)), np.zeros(len(batch), dtype=int)
         per = {d.name: scores for d in dets}
     else:
         scores, top, per = _ensemble(dets, X, y)
+        tighten = cfg.get("alarm_tighten", 1.0)
+        if alarm and tighten != 1.0:
+            # fraud-label flood: judge fraud-labelled rows more strictly (their reference is frozen and trusted)
+            scores = np.where(y == 1, scores * tighten, scores)
     state["last_per_detector"] = per
     state["status"] = _status(dets, wid, cfg["trusted_windows"])
     flagged = scores > 1.0
 
     quarantined = batch[flagged]
     accepted = batch[~flagged]
+    keep = ~flagged
+    if alarm:
+        keep = keep & (y == 0)   # fraud-label flood: freeze the minority-class references (poison would outnumber the real class)
     for d in dets:
-        d.update(X[~flagged], y[~flagged] if y is not None else None)  # accepted records only
+        d.update(X[keep], y[keep] if y is not None else None)  # accepted records only
     q.hold(quarantined, scores[flagged], wid, list(names[top][flagged]))
 
     if cfg["review_windows"] is not None:
