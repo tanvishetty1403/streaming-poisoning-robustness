@@ -73,6 +73,28 @@ def _status(dets, wid, trusted):
     return {"window_id": wid, "trusted": wid < trusted, "ready": {d.name: bool(d.ready) for d in dets}, "ref_rows": out}
 
 
+def _release_drift(flagged, per, y, frac):
+    """Mass-flag guard. Poisoning touches a small share of the legit-labelled rows (feature attacks tamper with
+    fraud rows only; flipped rows carry the fraud label). If the feature detectors flag more than `frac` of the
+    legit-labelled rows in a window while the label detector agrees they are fine, the reference is stale
+    (covariate drift, or a reference built from a skewed slice of a day) and the accepted-only reference would
+    never recover, because flagged rows are never added to it. Those rows are accepted instead.
+    Returns (flagged, number of rows released)."""
+    if not frac or y is None:
+        return flagged, 0
+    feat = [v for n, v in per.items() if n != "label_loss"]
+    if not feat:
+        return flagged, 0
+    fs = np.max(feat, axis=0)
+    ls = per["label_loss"] if "label_loss" in per else np.zeros(len(y))
+    legit = y == 0
+    rel = flagged & (fs > 1.0) & legit & (ls <= 1.0)
+    n0 = int(legit.sum())
+    if n0 == 0 or rel.sum() / n0 <= frac:
+        return flagged, 0
+    return flagged & ~rel, int(rel.sum())
+
+
 def defense(batch: pd.DataFrame, state: dict):
     """Score every record, quarantine the suspicious ones, optionally release reviewed ones.
 
@@ -113,6 +135,8 @@ def defense(batch: pd.DataFrame, state: dict):
     state["last_per_detector"] = per
     state["status"] = _status(dets, wid, cfg["trusted_windows"])
     flagged = scores > 1.0
+    flagged, released = _release_drift(flagged, per, y, cfg.get("mass_flag_frac"))
+    state["drift_released"] = state.get("drift_released", 0) + released
 
     quarantined = batch[flagged]
     accepted = batch[~flagged]

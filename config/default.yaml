@@ -26,6 +26,7 @@ defense:
   drift_min_ratio: 3.0      # drift alarm: and at least this many times the baseline count
   drift_min_rows: 0         # drift alarm: ignore windows smaller than this
   alarm_tighten: 1.5        # while the alarm is on, fraud-labelled rows are scored this many times more strictly (1 = off)
+  mass_flag_frac: 0.15      # mass-flag guard: if the feature detectors flag more than this share of a window's legit-labelled rows (and the label detector does not), treat it as drift and accept them (null = off)
   label_window: 20000       # label_loss: accepted rows the reference model is fit on
   label_min_ref: 2000       # label_loss: accepted rows needed before it may judge
   min_class: 20             # label_loss: rows of EACH class needed before it may judge
