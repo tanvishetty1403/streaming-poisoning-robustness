@@ -20,6 +20,7 @@ from confluent_kafka.admin import AdminClient, NewTopic
 
 from src.pipeline.core import StreamRun, prepare_run, records_to_window
 from src.pipeline.data import load_dataset
+from src.attacks.sweep import load_clean
 from src.pipeline.replay import replay_windows
 from src.pipeline.run_offline import append_csv, run_offline
 
@@ -107,11 +108,12 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--config", default="config/default.yaml")
     ap.add_argument("--check", action="store_true", help="also run offline and compare")
+    ap.add_argument("--clean-dir", help="use <dir>/stream_clean.csv.gz + test_clean.csv.gz instead of data/raw (no raw PaySim needed)")
     a = ap.parse_args()
     cfg = yaml.safe_load(open(a.config))
     dcfg = cfg["datasets"][a.dataset]
 
-    df = load_dataset(a.dataset, dcfg, a.seed)
+    df = load_clean(a.clean_dir) if a.clean_dir else load_dataset(a.dataset, dcfg, a.seed)
     # same prepare_run as the offline loop: apply_attack gets the identical train stream
     poisoned, test, dcfg = prepare_run(a.dataset, a.attack, a.budget, a.timing, a.seed, cfg, data=df)
     wids = sorted(set(((poisoned["step"] - poisoned["step"].min()) // dcfg["window_steps"]).tolist()))
