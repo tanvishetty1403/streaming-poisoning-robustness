@@ -18,13 +18,13 @@ ATTACKS = ["none", "random_flip", "targeted_flip", "feature_shift", "feature_sca
            "feature_noise", "backdoor"]
 
 
-def apply_attack_by_name(stream, attack, budget, timing, seed, dataset):
+def apply_attack_by_name(stream, attack, budget, timing, seed, dataset, cfg=None):
     """Our wrapper around the contract entry point apply_attack (src/attacks/api.py)."""
     if attack == "none":
         return no_attack(stream)
     from src.attacks.api import apply_attack        # P2's entry point (per contract)
     return apply_attack(stream, attack_name=attack, budget=budget, timing=timing,
-                        seed=seed, dataset=dataset)
+                        seed=seed, dataset=dataset, config=cfg)
 
 
 def get_defense(name):
@@ -40,7 +40,7 @@ def prepare_run(dataset, attack, budget, timing, seed, cfg, data=None):
     dcfg = cfg["datasets"][dataset]
     df = data if data is not None else load_dataset(dataset, dcfg, seed)
     stream, test = split_stream_test(df, dcfg["test_from_step"])
-    poisoned, mask = apply_attack_by_name(stream, attack, budget, timing, seed, dataset)
+    poisoned, mask = apply_attack_by_name(stream, attack, budget, timing, seed, dataset, cfg)
     poisoned = poisoned.copy()
     poisoned["is_poisoned"] = np.asarray(mask, dtype=bool)
     return poisoned, test, dcfg
@@ -66,11 +66,12 @@ class StreamRun:
         self.X_trig = None
         if attack == "backdoor":
             from src.attacks.api import make_triggered_test
-            trig = make_triggered_test(test[test["isFraud"] == 1], dataset)
+            trig = make_triggered_test(test[test["isFraud"] == 1], dataset, config=cfg)
             self.X_trig = featurize(trig, dataset)
         self.learner = OnlineLearner(lcfg["fraud_weight"], seed)
         self.defend = get_defense(defense)
-        self.state, self.rows, self.npois, self.n_seen = {}, [], [], 0
+        self.state = {"cfg": cfg["defense"], "dataset": dataset}
+        self.rows, self.npois, self.n_seen = [], [], 0
 
     def step(self, k, win):
         win = win.reset_index(drop=True)

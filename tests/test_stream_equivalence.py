@@ -23,7 +23,7 @@ def fake_modules(monkeypatch):
     """Stand-ins for P2's src.attacks.api and P3's src.defense.pipeline."""
     api = types.ModuleType("src.attacks.api")
 
-    def apply_attack(df, attack_name, budget, timing, seed, dataset):
+    def apply_attack(df, attack_name, budget, timing, seed, dataset, config=None):
         df = df.sort_values(["step", "record_id"], kind="stable").reset_index(drop=True)
         rng = np.random.default_rng(seed)
         cand = np.flatnonzero(df["isFraud"].to_numpy() == 1)
@@ -36,7 +36,7 @@ def fake_modules(monkeypatch):
             df.loc[pos, "oldbalanceDest"] = 1234.56
         return df, mask
 
-    def make_triggered_test(fraud_df, dataset):
+    def make_triggered_test(fraud_df, dataset, config=None):
         out = fraud_df.copy()
         out["oldbalanceDest"] = 1234.56
         return out

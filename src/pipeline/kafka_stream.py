@@ -24,7 +24,7 @@ from src.attacks.sweep import load_clean
 from src.pipeline.replay import replay_windows
 from src.pipeline.run_offline import append_csv, run_offline
 
-PARTS, BROKER, IDLE_TIMEOUT = 3, "localhost:9092", 120
+PARTS, BROKER, IDLE_TIMEOUT = 3, "127.0.0.1:9092", 120
 CHECK_COLS = ["window", "n_seen", "n_quarantined", "pr_auc", "recall", "f1", "det_precision",
               "det_recall", "det_fpr", "time_to_detect", "backdoor_hit_rate"]
 
@@ -107,6 +107,7 @@ def main():
     ap.add_argument("--defense", default="off")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--config", default="config/default.yaml")
+    ap.add_argument("--out", help="metrics CSV path; defaults to results_csv from config")
     ap.add_argument("--check", action="store_true", help="also run offline and compare")
     ap.add_argument("--clean-dir", help="use <dir>/stream_clean.csv.gz + test_clean.csv.gz instead of data/raw (no raw PaySim needed)")
     a = ap.parse_args()
@@ -130,17 +131,18 @@ def main():
         raise out["error"]
 
     kdf = out["df"]
-    append_csv(kdf, cfg["results_csv"])
     print(kdf.tail(3).to_string(index=False))
 
     if a.check:
         odf = run_offline(a.dataset, a.attack, a.budget, a.timing, a.defense, a.seed, cfg, data=df)
-        ok = np.allclose(kdf[CHECK_COLS].to_numpy(float), odf[CHECK_COLS].to_numpy(float),
-                         equal_nan=True, atol=1e-9)
+        ok = kdf.shape == odf.shape and np.allclose(
+            kdf[CHECK_COLS].to_numpy(float), odf[CHECK_COLS].to_numpy(float),
+            equal_nan=True, atol=1e-9, rtol=0)
         print("KAFKA MATCHES OFFLINE" if ok else "MISMATCH between Kafka and offline runs")
         if not ok:
-            diff = (kdf[CHECK_COLS].astype(float) - odf[CHECK_COLS].astype(float)).abs()
-            print("columns that differ:", [c for c in CHECK_COLS if (diff[c] > 1e-9).any()])
+            raise RuntimeError("Kafka/offline equivalence check failed; metrics were not appended")
+
+    append_csv(kdf, a.out or cfg["results_csv"])
 
 
 if __name__ == "__main__":

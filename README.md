@@ -79,6 +79,27 @@ python scripts/build_notebook.py                                   # notebooks/d
 ```
 The notebook reads only `results/summary/*.csv`, so it re-runs without the 600 MB attacked samples.
 
+To rebuild and execute the notebook after installing `requirements.txt`:
+```bash
+python scripts/build_notebook.py
+```
+
+### Verify Kafka against offline on an attacked stream
+
+Start Docker Desktop's engine, then run from the repository root (Windows CMD):
+```bat
+docker compose -f docker/docker-compose.yml up -d
+docker compose -f docker/docker-compose.yml exec kafka /opt/kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --list
+.venv\Scripts\python.exe -m src.pipeline.kafka_stream --dataset paysim --attack random_flip --budget 0.2 --timing uniform --defense on --clean-dir data/attacked_sample --check --out results/verification/kafka_metrics.csv
+```
+If the broker readiness command fails during startup, wait briefly and repeat it before starting Python.
+The saved clean sample must already exist; create it with the data steps above.
+Success prints `KAFKA MATCHES OFFLINE`. A mismatch raises an error and does not append metrics.
+The verification CSV is separate from the main experiment grid. To stop the broker afterward:
+```bat
+docker compose -f docker/docker-compose.yml down
+```
+
 ### Kafka
 `docker compose -f docker/docker-compose.yml up -d` starts a single-node Kafka (3 partitions);
 `src/pipeline/kafka_stream.py` runs the partitioned consumers; `run_all.sh` chains setup and a check run.
