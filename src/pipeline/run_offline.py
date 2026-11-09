@@ -20,7 +20,7 @@ def run_offline(dataset, attack="none", budget=0.0, timing="uniform", defense="o
 
 
 def append_csv(df, path):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     df.to_csv(path, mode="a", header=not os.path.exists(path), index=False)
 
 

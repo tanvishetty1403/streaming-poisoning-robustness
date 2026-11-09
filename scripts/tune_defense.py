@@ -89,6 +89,7 @@ def main():
     ap.add_argument("--attacks", nargs="+", help="default: every attacked file in the folder")
     ap.add_argument("--budgets", nargs="+", type=float)
     ap.add_argument("--timings", nargs="+")
+    ap.add_argument("--seeds", nargs="+", type=int, help="attack seeds to include (default: all files)")
     ap.add_argument("--z", nargs="+", type=float, help="z_threshold grid (default: config value)")
     ap.add_argument("--loss", nargs="+", type=float, help="loss_threshold grid (default: config value)")
     ap.add_argument("--detectors", nargs="+", help="e.g. robust_z label_loss mahalanobis (default: config)")
@@ -114,6 +115,8 @@ def main():
         if a.budgets and float(m["budget"]) not in a.budgets:
             continue
         if a.timings and m["timing"] not in a.timings:
+            continue
+        if a.seeds and int(m["seed"] or -1) not in a.seeds:
             continue
         keep.append((f, m))
     if not keep:

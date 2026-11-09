@@ -1,0 +1,325 @@
+file,attack,budget,timing,seed,recall,precision,clean_loss,clean_fraud_loss,variant
+backdoor_b0.2_burst_s0.csv.gz,backdoor,0.2,burst,0,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+backdoor_b0.2_low_and_slow_s0.csv.gz,backdoor,0.2,low_and_slow,0,0.0,0.0,6.072644812602976e-05,0.0037950664136622,robust_z only
+backdoor_b0.2_uniform_s0.csv.gz,backdoor,0.2,uniform,0,0.0,0.0,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_noise_b0.2_burst_s0.csv.gz,feature_noise,0.2,burst,0,0.6031746031746031,0.6608695652173913,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_noise_b0.2_low_and_slow_s0.csv.gz,feature_noise,0.2,low_and_slow,0,0.6111111111111112,0.6695652173913044,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_noise_b0.2_uniform_s0.csv.gz,feature_noise,0.2,uniform,0,0.5476190476190477,0.6448598130841121,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_scale_b0.2_burst_s0.csv.gz,feature_scale,0.2,burst,0,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_scale_b0.2_low_and_slow_s0.csv.gz,feature_scale,0.2,low_and_slow,0,0.0079365079365079,0.0256410256410256,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_scale_b0.2_uniform_s0.csv.gz,feature_scale,0.2,uniform,0,0.0079365079365079,0.0256410256410256,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_shift_b0.2_burst_s0.csv.gz,feature_shift,0.2,burst,0,0.0079365079365079,0.025,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_shift_b0.2_low_and_slow_s0.csv.gz,feature_shift,0.2,low_and_slow,0,0.0,0.0,6.392257697476816e-05,0.0075901328273244,robust_z only
+feature_shift_b0.2_uniform_s0.csv.gz,feature_shift,0.2,uniform,0,0.0,0.0,6.392257697476816e-05,0.0075901328273244,robust_z only
+random_flip_b0.2_burst_s0.csv.gz,random_flip,0.2,burst,0,0.396886406614187,0.9991807090188436,7.223909970557685e-05,0.0052173913043478,robust_z only
+random_flip_b0.2_low_and_slow_s0.csv.gz,random_flip,0.2,low_and_slow,0,0.356981397598839,0.9988187523071244,9.371558880723484e-05,0.0213592233009708,robust_z only
+random_flip_b0.2_uniform_s0.csv.gz,random_flip,0.2,uniform,0,0.3591098992919653,0.9989234947275708,8.590595640663194e-05,0.0190839694656488,robust_z only
+targeted_flip_b0.2_burst_s0.csv.gz,targeted_flip,0.2,burst,0,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+targeted_flip_b0.2_low_and_slow_s0.csv.gz,targeted_flip,0.2,low_and_slow,0,0.0079365079365079,0.0256410256410256,6.072644812602976e-05,0.0037950664136622,robust_z only
+targeted_flip_b0.2_uniform_s0.csv.gz,targeted_flip,0.2,uniform,0,0.0,0.0,6.072644812602976e-05,0.0037950664136622,robust_z only
+backdoor_b0.2_burst_s1.csv.gz,backdoor,0.2,burst,1,0.0,0.0,6.072644812602976e-05,0.0037950664136622,robust_z only
+backdoor_b0.2_low_and_slow_s1.csv.gz,backdoor,0.2,low_and_slow,1,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+backdoor_b0.2_uniform_s1.csv.gz,backdoor,0.2,uniform,1,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_noise_b0.2_burst_s1.csv.gz,feature_noise,0.2,burst,1,0.5873015873015873,0.6607142857142857,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_noise_b0.2_low_and_slow_s1.csv.gz,feature_noise,0.2,low_and_slow,1,0.5952380952380952,0.6578947368421053,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_noise_b0.2_uniform_s1.csv.gz,feature_noise,0.2,uniform,1,0.626984126984127,0.6694915254237288,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_scale_b0.2_burst_s1.csv.gz,feature_scale,0.2,burst,1,0.0079365079365079,0.0256410256410256,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_scale_b0.2_low_and_slow_s1.csv.gz,feature_scale,0.2,low_and_slow,1,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_scale_b0.2_uniform_s1.csv.gz,feature_scale,0.2,uniform,1,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_shift_b0.2_burst_s1.csv.gz,feature_shift,0.2,burst,1,0.0,0.0,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_shift_b0.2_low_and_slow_s1.csv.gz,feature_shift,0.2,low_and_slow,1,0.0,0.0,6.552064139913737e-05,0.0094876660341555,robust_z only
+feature_shift_b0.2_uniform_s1.csv.gz,feature_shift,0.2,uniform,1,0.0,0.0,6.552064139913737e-05,0.0094876660341555,robust_z only
+random_flip_b0.2_burst_s1.csv.gz,random_flip,0.2,burst,1,0.3988513026193115,0.9993608956276444,5.661972435956258e-05,0.005,robust_z only
+random_flip_b0.2_low_and_slow_s1.csv.gz,random_flip,0.2,low_and_slow,1,0.3596759723468257,0.9987787900251568,9.762021441303894e-05,0.0209923664122137,robust_z only
+random_flip_b0.2_uniform_s1.csv.gz,random_flip,0.2,uniform,1,0.3618308793779795,0.9987618053363764,9.957261870129972e-05,0.0218978102189781,robust_z only
+targeted_flip_b0.2_burst_s1.csv.gz,targeted_flip,0.2,burst,1,0.0079365079365079,0.0256410256410256,6.072644812602976e-05,0.0037950664136622,robust_z only
+targeted_flip_b0.2_low_and_slow_s1.csv.gz,targeted_flip,0.2,low_and_slow,1,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+targeted_flip_b0.2_uniform_s1.csv.gz,targeted_flip,0.2,uniform,1,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+backdoor_b0.2_burst_s2.csv.gz,backdoor,0.2,burst,2,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+backdoor_b0.2_low_and_slow_s2.csv.gz,backdoor,0.2,low_and_slow,2,0.0,0.0,6.072644812602976e-05,0.0037950664136622,robust_z only
+backdoor_b0.2_uniform_s2.csv.gz,backdoor,0.2,uniform,2,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_noise_b0.2_burst_s2.csv.gz,feature_noise,0.2,burst,2,0.5396825396825397,0.6355140186915887,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_noise_b0.2_low_and_slow_s2.csv.gz,feature_noise,0.2,low_and_slow,2,0.6587301587301587,0.6859504132231405,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_noise_b0.2_uniform_s2.csv.gz,feature_noise,0.2,uniform,2,0.6349206349206349,0.6722689075630253,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_scale_b0.2_burst_s2.csv.gz,feature_scale,0.2,burst,2,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_scale_b0.2_low_and_slow_s2.csv.gz,feature_scale,0.2,low_and_slow,2,0.0079365079365079,0.0256410256410256,6.072644812602976e-05,0.0037950664136622,robust_z only
+feature_scale_b0.2_uniform_s2.csv.gz,feature_scale,0.2,uniform,2,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+feature_shift_b0.2_burst_s2.csv.gz,feature_shift,0.2,burst,2,0.0,0.0,0.0007766593102434,0.8538899430740038,robust_z only
+feature_shift_b0.2_low_and_slow_s2.csv.gz,feature_shift,0.2,low_and_slow,2,0.0,0.0,6.392257697476816e-05,0.0075901328273244,robust_z only
+feature_shift_b0.2_uniform_s2.csv.gz,feature_shift,0.2,uniform,2,0.0,0.0,6.392257697476816e-05,0.0075901328273244,robust_z only
+random_flip_b0.2_burst_s2.csv.gz,random_flip,0.2,burst,2,0.3808204478688409,0.9993998568889504,5.0762511494780246e-05,0.0051724137931034,robust_z only
+random_flip_b0.2_low_and_slow_s2.csv.gz,random_flip,0.2,low_and_slow,2,0.3594648794131616,0.99880248301481,9.566781012477816e-05,0.0275735294117647,robust_z only
+random_flip_b0.2_uniform_s2.csv.gz,random_flip,0.2,uniform,2,0.3581631396555667,0.9988471350078492,9.17630015482566e-05,0.0245746691871455,robust_z only
+targeted_flip_b0.2_burst_s2.csv.gz,targeted_flip,0.2,burst,2,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+targeted_flip_b0.2_low_and_slow_s2.csv.gz,targeted_flip,0.2,low_and_slow,2,0.0,0.0,6.072644812602976e-05,0.0037950664136622,robust_z only
+targeted_flip_b0.2_uniform_s2.csv.gz,targeted_flip,0.2,uniform,2,0.0,0.0,6.232451255039896e-05,0.0056925996204933,robust_z only
+backdoor_b0.2_burst_s0.csv.gz,backdoor,0.2,burst,0,0.5317460317460317,0.7976190476190477,2.7167095214276468e-05,0.0132827324478178,label_loss only
+backdoor_b0.2_low_and_slow_s0.csv.gz,backdoor,0.2,low_and_slow,0,0.6428571428571429,0.81,3.036322406301488e-05,0.01707779886148,label_loss only
+backdoor_b0.2_uniform_s0.csv.gz,backdoor,0.2,uniform,0,0.6428571428571429,0.81,3.036322406301488e-05,0.0151802656546489,label_loss only
+feature_noise_b0.2_burst_s0.csv.gz,feature_noise,0.2,burst,0,0.3888888888888889,0.7424242424242424,2.7167095214276468e-05,0.0132827324478178,label_loss only
+feature_noise_b0.2_low_and_slow_s0.csv.gz,feature_noise,0.2,low_and_slow,0,0.4047619047619047,0.7285714285714285,3.036322406301488e-05,0.01707779886148,label_loss only
+feature_noise_b0.2_uniform_s0.csv.gz,feature_noise,0.2,uniform,0,0.4126984126984127,0.7323943661971831,3.036322406301488e-05,0.0151802656546489,label_loss only
+feature_scale_b0.2_burst_s0.csv.gz,feature_scale,0.2,burst,0,0.0158730158730158,0.1052631578947368,2.7167095214276468e-05,0.0132827324478178,label_loss only
+feature_scale_b0.2_low_and_slow_s0.csv.gz,feature_scale,0.2,low_and_slow,0,0.0,0.0,3.036322406301488e-05,0.01707779886148,label_loss only
+feature_scale_b0.2_uniform_s0.csv.gz,feature_scale,0.2,uniform,0,0.0079365079365079,0.0526315789473684,2.8765159638645676e-05,0.0151802656546489,label_loss only
+feature_shift_b0.2_burst_s0.csv.gz,feature_shift,0.2,burst,0,1.0,0.8811188811188811,2.7167095214276468e-05,0.0132827324478178,label_loss only
+feature_shift_b0.2_low_and_slow_s0.csv.gz,feature_shift,0.2,low_and_slow,0,1.0,0.8689655172413793,3.036322406301488e-05,0.01707779886148,label_loss only
+feature_shift_b0.2_uniform_s0.csv.gz,feature_shift,0.2,uniform,0,1.0,0.8689655172413793,3.036322406301488e-05,0.0151802656546489,label_loss only
+random_flip_b0.2_burst_s0.csv.gz,random_flip,0.2,burst,0,0.9870970579181144,0.9998574534050818,3.1238529602411616e-05,0.0121739130434782,label_loss only
+random_flip_b0.2_low_and_slow_s0.csv.gz,random_flip,0.2,low_and_slow,0,0.8984124191916971,0.999295616189088,0.0001405733832108,0.0077669902912621,label_loss only
+random_flip_b0.2_uniform_s0.csv.gz,random_flip,0.2,uniform,0,0.827644135626017,0.9990444744078396,0.0001757167290135,0.0133587786259541,label_loss only
+targeted_flip_b0.2_burst_s0.csv.gz,targeted_flip,0.2,burst,0,0.984126984126984,0.8794326241134752,2.7167095214276468e-05,0.0132827324478178,label_loss only
+targeted_flip_b0.2_low_and_slow_s0.csv.gz,targeted_flip,0.2,low_and_slow,0,0.992063492063492,0.8680555555555556,3.036322406301488e-05,0.01707779886148,label_loss only
+targeted_flip_b0.2_uniform_s0.csv.gz,targeted_flip,0.2,uniform,0,0.992063492063492,0.8680555555555556,3.036322406301488e-05,0.0151802656546489,label_loss only
+backdoor_b0.2_burst_s1.csv.gz,backdoor,0.2,burst,1,0.5,0.7875,2.7167095214276468e-05,0.0132827324478178,label_loss only
+backdoor_b0.2_low_and_slow_s1.csv.gz,backdoor,0.2,low_and_slow,1,0.6428571428571429,0.81,3.036322406301488e-05,0.0151802656546489,label_loss only
+backdoor_b0.2_uniform_s1.csv.gz,backdoor,0.2,uniform,1,0.6904761904761905,0.8285714285714286,2.8765159638645676e-05,0.0151802656546489,label_loss only
+feature_noise_b0.2_burst_s1.csv.gz,feature_noise,0.2,burst,1,0.4047619047619047,0.75,2.7167095214276468e-05,0.0132827324478178,label_loss only
+feature_noise_b0.2_low_and_slow_s1.csv.gz,feature_noise,0.2,low_and_slow,1,0.4126984126984127,0.6842105263157895,3.83535461848609e-05,0.0151802656546489,label_loss only
+feature_noise_b0.2_uniform_s1.csv.gz,feature_noise,0.2,uniform,1,0.4126984126984127,0.7123287671232876,3.355935291175328e-05,0.0151802656546489,label_loss only
+feature_scale_b0.2_burst_s1.csv.gz,feature_scale,0.2,burst,1,0.0158730158730158,0.1052631578947368,2.7167095214276468e-05,0.0132827324478178,label_loss only
+feature_scale_b0.2_low_and_slow_s1.csv.gz,feature_scale,0.2,low_and_slow,1,0.0079365079365079,0.0526315789473684,2.8765159638645676e-05,0.0151802656546489,label_loss only
+feature_scale_b0.2_uniform_s1.csv.gz,feature_scale,0.2,uniform,1,0.0079365079365079,0.0526315789473684,2.8765159638645676e-05,0.0151802656546489,label_loss only
+feature_shift_b0.2_burst_s1.csv.gz,feature_shift,0.2,burst,1,1.0,0.8811188811188811,2.7167095214276468e-05,0.0132827324478178,label_loss only
+feature_shift_b0.2_low_and_slow_s1.csv.gz,feature_shift,0.2,low_and_slow,1,1.0,0.8689655172413793,3.036322406301488e-05,0.0151802656546489,label_loss only
+feature_shift_b0.2_uniform_s1.csv.gz,feature_shift,0.2,uniform,1,1.0,0.875,2.8765159638645676e-05,0.0151802656546489,label_loss only
+random_flip_b0.2_burst_s1.csv.gz,random_flip,0.2,burst,1,0.992092810526501,0.999831581186732,3.70956814769548e-05,0.015,label_loss only
+random_flip_b0.2_low_and_slow_s1.csv.gz,random_flip,0.2,low_and_slow,1,0.9013756222843774,0.9985773724263596,0.000285051026086,0.015267175572519,label_loss only
+random_flip_b0.2_uniform_s1.csv.gz,random_flip,0.2,uniform,1,0.9021584252467147,0.9985397196261684,0.0002928606432391,0.0164233576642335,label_loss only
+targeted_flip_b0.2_burst_s1.csv.gz,targeted_flip,0.2,burst,1,0.9761904761904762,0.8785714285714286,2.7167095214276468e-05,0.0132827324478178,label_loss only
+targeted_flip_b0.2_low_and_slow_s1.csv.gz,targeted_flip,0.2,low_and_slow,1,0.992063492063492,0.8680555555555556,3.036322406301488e-05,0.0151802656546489,label_loss only
+targeted_flip_b0.2_uniform_s1.csv.gz,targeted_flip,0.2,uniform,1,0.992063492063492,0.8741258741258742,2.8765159638645676e-05,0.0151802656546489,label_loss only
+backdoor_b0.2_burst_s2.csv.gz,backdoor,0.2,burst,2,0.8015873015873016,0.8487394957983193,2.8765159638645676e-05,0.0113851992409867,label_loss only
+backdoor_b0.2_low_and_slow_s2.csv.gz,backdoor,0.2,low_and_slow,2,0.6587301587301587,0.8137254901960784,3.036322406301488e-05,0.01707779886148,label_loss only
+backdoor_b0.2_uniform_s2.csv.gz,backdoor,0.2,uniform,2,0.6587301587301587,0.8383838383838383,2.5569030789907264e-05,0.0094876660341555,label_loss only
+feature_noise_b0.2_burst_s2.csv.gz,feature_noise,0.2,burst,2,0.365079365079365,0.6666666666666666,3.675548176049169e-05,0.0113851992409867,label_loss only
+feature_noise_b0.2_low_and_slow_s2.csv.gz,feature_noise,0.2,low_and_slow,2,0.3015873015873015,0.6333333333333333,3.515741733612249e-05,0.01707779886148,label_loss only
+feature_noise_b0.2_uniform_s2.csv.gz,feature_noise,0.2,uniform,2,0.3015873015873015,0.6666666666666666,3.036322406301488e-05,0.0094876660341555,label_loss only
+feature_scale_b0.2_burst_s2.csv.gz,feature_scale,0.2,burst,2,0.0238095238095238,0.1578947368421052,2.5569030789907264e-05,0.0113851992409867,label_loss only
+feature_scale_b0.2_low_and_slow_s2.csv.gz,feature_scale,0.2,low_and_slow,2,0.0,0.0,3.036322406301488e-05,0.01707779886148,label_loss only
+feature_scale_b0.2_uniform_s2.csv.gz,feature_scale,0.2,uniform,2,0.0317460317460317,0.2105263157894736,2.397096636553806e-05,0.0094876660341555,label_loss only
+feature_shift_b0.2_burst_s2.csv.gz,feature_shift,0.2,burst,2,1.0,0.875,2.8765159638645676e-05,0.0113851992409867,label_loss only
+feature_shift_b0.2_low_and_slow_s2.csv.gz,feature_shift,0.2,low_and_slow,2,1.0,0.8689655172413793,3.036322406301488e-05,0.01707779886148,label_loss only
+feature_shift_b0.2_uniform_s2.csv.gz,feature_shift,0.2,uniform,2,1.0,0.8873239436619719,2.5569030789907264e-05,0.0094876660341555,label_loss only
+random_flip_b0.2_burst_s2.csv.gz,random_flip,0.2,burst,2,0.9705525357538656,0.999836903338045,3.5143277188694014e-05,0.0120689655172413,label_loss only
+random_flip_b0.2_low_and_slow_s2.csv.gz,random_flip,0.2,low_and_slow,2,0.8968898974440164,0.999167123931959,0.0001659543645021,0.0165441176470588,label_loss only
+random_flip_b0.2_uniform_s2.csv.gz,random_flip,0.2,uniform,2,0.9047619047619048,0.9993393825169526,0.0001327634916017,0.0132325141776937,label_loss only
+targeted_flip_b0.2_burst_s2.csv.gz,targeted_flip,0.2,burst,2,0.9761904761904762,0.8723404255319149,2.8765159638645676e-05,0.0113851992409867,label_loss only
+targeted_flip_b0.2_low_and_slow_s2.csv.gz,targeted_flip,0.2,low_and_slow,2,1.0,0.8689655172413793,3.036322406301488e-05,0.01707779886148,label_loss only
+targeted_flip_b0.2_uniform_s2.csv.gz,targeted_flip,0.2,uniform,2,0.9682539682539684,0.8840579710144928,2.5569030789907264e-05,0.0094876660341555,label_loss only
+backdoor_b0.2_burst_s0.csv.gz,backdoor,0.2,burst,0,0.0,0.0,0.0002476999857772,0.0,mahalanobis only
+backdoor_b0.2_low_and_slow_s0.csv.gz,backdoor,0.2,low_and_slow,0,0.0,0.0,0.0002476999857772,0.0,mahalanobis only
+backdoor_b0.2_uniform_s0.csv.gz,backdoor,0.2,uniform,0,0.0,0.0,0.0002476999857772,0.0,mahalanobis only
+feature_noise_b0.2_burst_s0.csv.gz,feature_noise,0.2,burst,0,1.0,0.4468085106382978,0.0002492980502015,0.0,mahalanobis only
+feature_noise_b0.2_low_and_slow_s0.csv.gz,feature_noise,0.2,low_and_slow,0,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_noise_b0.2_uniform_s0.csv.gz,feature_noise,0.2,uniform,0,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_burst_s0.csv.gz,feature_scale,0.2,burst,0,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_low_and_slow_s0.csv.gz,feature_scale,0.2,low_and_slow,0,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_uniform_s0.csv.gz,feature_scale,0.2,uniform,0,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_burst_s0.csv.gz,feature_shift,0.2,burst,0,1.0,0.4468085106382978,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_low_and_slow_s0.csv.gz,feature_shift,0.2,low_and_slow,0,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_uniform_s0.csv.gz,feature_shift,0.2,uniform,0,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+random_flip_b0.2_burst_s0.csv.gz,random_flip,0.2,burst,0,0.938493337437882,0.9992508100616208,0.000156192648012,0.0,mahalanobis only
+random_flip_b0.2_low_and_slow_s0.csv.gz,random_flip,0.2,low_and_slow,0,6.156823079291086e-05,0.0583333333333333,0.000220622115317,0.0,mahalanobis only
+random_flip_b0.2_uniform_s0.csv.gz,random_flip,0.2,uniform,0,5.2772769251066447e-05,0.05,0.0002225745234171,0.0,mahalanobis only
+targeted_flip_b0.2_burst_s0.csv.gz,targeted_flip,0.2,burst,0,0.0634920634920634,0.05,0.0002429057925041,0.0,mahalanobis only
+targeted_flip_b0.2_low_and_slow_s0.csv.gz,targeted_flip,0.2,low_and_slow,0,0.0476190476190476,0.0379746835443038,0.0002429057925041,0.0,mahalanobis only
+targeted_flip_b0.2_uniform_s0.csv.gz,targeted_flip,0.2,uniform,0,0.0714285714285714,0.0555555555555555,0.0002445038569284,0.0,mahalanobis only
+backdoor_b0.2_burst_s1.csv.gz,backdoor,0.2,burst,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+backdoor_b0.2_low_and_slow_s1.csv.gz,backdoor,0.2,low_and_slow,1,0.0,0.0,0.0002476999857772,0.0,mahalanobis only
+backdoor_b0.2_uniform_s1.csv.gz,backdoor,0.2,uniform,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_noise_b0.2_burst_s1.csv.gz,feature_noise,0.2,burst,1,1.0,0.4468085106382978,0.0002492980502015,0.0,mahalanobis only
+feature_noise_b0.2_low_and_slow_s1.csv.gz,feature_noise,0.2,low_and_slow,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_noise_b0.2_uniform_s1.csv.gz,feature_noise,0.2,uniform,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_burst_s1.csv.gz,feature_scale,0.2,burst,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_low_and_slow_s1.csv.gz,feature_scale,0.2,low_and_slow,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_uniform_s1.csv.gz,feature_scale,0.2,uniform,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_burst_s1.csv.gz,feature_shift,0.2,burst,1,1.0,0.4468085106382978,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_low_and_slow_s1.csv.gz,feature_shift,0.2,low_and_slow,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_uniform_s1.csv.gz,feature_shift,0.2,uniform,1,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+random_flip_b0.2_burst_s1.csv.gz,random_flip,0.2,burst,1,0.9406301124069872,0.999056471577374,0.0001971928331143,0.0,mahalanobis only
+random_flip_b0.2_low_and_slow_s1.csv.gz,random_flip,0.2,low_and_slow,1,4.397769451334284e-05,0.040650406504065,0.0002303837060147,0.0,mahalanobis only
+random_flip_b0.2_uniform_s1.csv.gz,random_flip,0.2,uniform,1,5.27732334160114e-05,0.048780487804878,0.0002284313017265,0.0,mahalanobis only
+targeted_flip_b0.2_burst_s1.csv.gz,targeted_flip,0.2,burst,1,0.0793650793650793,0.0606060606060606,0.0002476999857772,0.0,mahalanobis only
+targeted_flip_b0.2_low_and_slow_s1.csv.gz,targeted_flip,0.2,low_and_slow,1,0.0555555555555555,0.0434782608695652,0.0002461019213528,0.0,mahalanobis only
+targeted_flip_b0.2_uniform_s1.csv.gz,targeted_flip,0.2,uniform,1,0.0079365079365079,0.0064102564102564,0.0002476999857772,0.0,mahalanobis only
+backdoor_b0.2_burst_s2.csv.gz,backdoor,0.2,burst,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+backdoor_b0.2_low_and_slow_s2.csv.gz,backdoor,0.2,low_and_slow,2,0.0,0.0,0.0002476999857772,0.0,mahalanobis only
+backdoor_b0.2_uniform_s2.csv.gz,backdoor,0.2,uniform,2,0.0,0.0,0.0002476999857772,0.0018975332068311,mahalanobis only
+feature_noise_b0.2_burst_s2.csv.gz,feature_noise,0.2,burst,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_noise_b0.2_low_and_slow_s2.csv.gz,feature_noise,0.2,low_and_slow,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_noise_b0.2_uniform_s2.csv.gz,feature_noise,0.2,uniform,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_burst_s2.csv.gz,feature_scale,0.2,burst,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_low_and_slow_s2.csv.gz,feature_scale,0.2,low_and_slow,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_scale_b0.2_uniform_s2.csv.gz,feature_scale,0.2,uniform,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_burst_s2.csv.gz,feature_shift,0.2,burst,2,0.0,0.0,0.0002572883723234,0.0094876660341555,mahalanobis only
+feature_shift_b0.2_low_and_slow_s2.csv.gz,feature_shift,0.2,low_and_slow,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+feature_shift_b0.2_uniform_s2.csv.gz,feature_shift,0.2,uniform,2,0.0,0.0,0.0002508961146259,0.0018975332068311,mahalanobis only
+random_flip_b0.2_burst_s2.csv.gz,random_flip,0.2,burst,2,8.795538902668566e-06,0.0064102564102564,0.0003026226646804,0.0,mahalanobis only
+random_flip_b0.2_low_and_slow_s2.csv.gz,random_flip,0.2,low_and_slow,2,3.5182155610674265e-05,0.0330578512396694,0.0002284313017265,0.0,mahalanobis only
+random_flip_b0.2_uniform_s2.csv.gz,random_flip,0.2,uniform,2,5.27732334160114e-05,0.0491803278688524,0.0002264788974382,0.0,mahalanobis only
+targeted_flip_b0.2_burst_s2.csv.gz,targeted_flip,0.2,burst,2,0.0,0.0,0.0002492980502015,0.0,mahalanobis only
+targeted_flip_b0.2_low_and_slow_s2.csv.gz,targeted_flip,0.2,low_and_slow,2,0.0714285714285714,0.0559006211180124,0.0002429057925041,0.0,mahalanobis only
+targeted_flip_b0.2_uniform_s2.csv.gz,targeted_flip,0.2,uniform,2,0.0476190476190476,0.0387096774193548,0.000238111599231,0.0018975332068311,mahalanobis only
+backdoor_b0.2_burst_s0.csv.gz,backdoor,0.2,burst,0,0.5,0.4344827586206896,0.0001310412827982,0.0683111954459203,robust_z + label_loss
+backdoor_b0.2_low_and_slow_s0.csv.gz,backdoor,0.2,low_and_slow,0,0.5793650793650794,0.5615384615384615,9.108967218904464e-05,0.0208728652751423,robust_z + label_loss
+backdoor_b0.2_uniform_s0.csv.gz,backdoor,0.2,uniform,0,0.6111111111111112,0.5032679738562091,0.000121452896252,0.0569259962049335,robust_z + label_loss
+feature_noise_b0.2_burst_s0.csv.gz,feature_noise,0.2,burst,0,0.753968253968254,0.6291390728476821,8.949160776467542e-05,0.0189753320683111,robust_z + label_loss
+feature_noise_b0.2_low_and_slow_s0.csv.gz,feature_noise,0.2,low_and_slow,0,0.7222222222222222,0.6148648648648649,9.108967218904464e-05,0.0208728652751423,robust_z + label_loss
+feature_noise_b0.2_uniform_s0.csv.gz,feature_noise,0.2,uniform,0,0.6984126984126984,0.6111111111111112,8.949160776467542e-05,0.0189753320683111,robust_z + label_loss
+feature_scale_b0.2_burst_s0.csv.gz,feature_scale,0.2,burst,0,0.0158730158730158,0.0238095238095238,0.0001310412827982,0.0683111954459203,robust_z + label_loss
+feature_scale_b0.2_low_and_slow_s0.csv.gz,feature_scale,0.2,low_and_slow,0,0.0396825396825396,0.0595238095238095,0.0001262470895251,0.0626185958254269,robust_z + label_loss
+feature_scale_b0.2_uniform_s0.csv.gz,feature_scale,0.2,uniform,0,0.0634920634920634,0.0952380952380952,0.000121452896252,0.0569259962049335,robust_z + label_loss
+feature_shift_b0.2_burst_s0.csv.gz,feature_shift,0.2,burst,0,1.0,0.6057692307692307,0.0001310412827982,0.0683111954459203,robust_z + label_loss
+feature_shift_b0.2_low_and_slow_s0.csv.gz,feature_shift,0.2,low_and_slow,0,1.0,0.6885245901639344,9.108967218904464e-05,0.0208728652751423,robust_z + label_loss
+feature_shift_b0.2_uniform_s0.csv.gz,feature_shift,0.2,uniform,0,1.0,0.6237623762376238,0.000121452896252,0.0569259962049335,robust_z + label_loss
+random_flip_b0.2_burst_s0.csv.gz,random_flip,0.2,burst,0,0.987448876379788,0.9995281381041836,0.0001034776293079,0.017391304347826,robust_z + label_loss
+random_flip_b0.2_low_and_slow_s0.csv.gz,random_flip,0.2,low_and_slow,0,0.9123444302739786,0.9988444761143584,0.000234288972018,0.029126213592233,robust_z + label_loss
+random_flip_b0.2_uniform_s0.csv.gz,random_flip,0.2,uniform,0,0.9200492545846344,0.9988446040142848,0.0002362413801182,0.032442748091603,robust_z + label_loss
+targeted_flip_b0.2_burst_s0.csv.gz,targeted_flip,0.2,burst,0,0.984126984126984,0.6019417475728155,0.0001310412827982,0.0683111954459203,robust_z + label_loss
+targeted_flip_b0.2_low_and_slow_s0.csv.gz,targeted_flip,0.2,low_and_slow,0,1.0,0.6885245901639344,9.108967218904464e-05,0.0208728652751423,robust_z + label_loss
+targeted_flip_b0.2_uniform_s0.csv.gz,targeted_flip,0.2,uniform,0,0.992063492063492,0.6218905472636815,0.000121452896252,0.0569259962049335,robust_z + label_loss
+backdoor_b0.2_burst_s1.csv.gz,backdoor,0.2,burst,1,0.492063492063492,0.5299145299145299,8.789354334030623e-05,0.01707779886148,robust_z + label_loss
+backdoor_b0.2_low_and_slow_s1.csv.gz,backdoor,0.2,low_and_slow,1,0.626984126984127,0.5766423357664233,9.268773661341384e-05,0.0208728652751423,robust_z + label_loss
+backdoor_b0.2_uniform_s1.csv.gz,backdoor,0.2,uniform,1,0.6190476190476191,0.4968152866242038,0.0001262470895251,0.0626185958254269,robust_z + label_loss
+feature_noise_b0.2_burst_s1.csv.gz,feature_noise,0.2,burst,1,0.7380952380952381,0.6283783783783784,8.789354334030623e-05,0.01707779886148,robust_z + label_loss
+feature_noise_b0.2_low_and_slow_s1.csv.gz,feature_noise,0.2,low_and_slow,1,0.7619047619047619,0.6274509803921569,9.108967218904464e-05,0.0208728652751423,robust_z + label_loss
+feature_noise_b0.2_uniform_s1.csv.gz,feature_noise,0.2,uniform,1,0.7619047619047619,0.6274509803921569,9.108967218904464e-05,0.0208728652751423,robust_z + label_loss
+feature_scale_b0.2_burst_s1.csv.gz,feature_scale,0.2,burst,1,0.0238095238095238,0.0357142857142857,0.0001294432183739,0.0664136622390891,robust_z + label_loss
+feature_scale_b0.2_low_and_slow_s1.csv.gz,feature_scale,0.2,low_and_slow,1,0.0555555555555555,0.0833333333333333,0.0001230509606764,0.0588235294117647,robust_z + label_loss
+feature_scale_b0.2_uniform_s1.csv.gz,feature_scale,0.2,uniform,1,0.0396825396825396,0.0595238095238095,0.0001262470895251,0.0626185958254269,robust_z + label_loss
+feature_shift_b0.2_burst_s1.csv.gz,feature_shift,0.2,burst,1,1.0,0.6961325966850829,8.789354334030623e-05,0.01707779886148,robust_z + label_loss
+feature_shift_b0.2_low_and_slow_s1.csv.gz,feature_shift,0.2,low_and_slow,1,1.0,0.6847826086956522,9.268773661341384e-05,0.0208728652751423,robust_z + label_loss
+feature_shift_b0.2_uniform_s1.csv.gz,feature_shift,0.2,uniform,1,1.0,0.6146341463414634,0.0001262470895251,0.0626185958254269,robust_z + label_loss
+random_flip_b0.2_burst_s1.csv.gz,random_flip,0.2,burst,1,0.9927436804052984,0.9995749090039586,9.371540583651738e-05,0.02,robust_z + label_loss
+random_flip_b0.2_low_and_slow_s1.csv.gz,random_flip,0.2,low_and_slow,1,0.9159938079406124,0.9981502070234628,0.0003768140276343,0.0362595419847328,robust_z + label_loss
+random_flip_b0.2_uniform_s1.csv.gz,random_flip,0.2,uniform,1,0.9164951536580648,0.9980842911877394,0.0003904808576521,0.0383211678832116,robust_z + label_loss
+targeted_flip_b0.2_burst_s1.csv.gz,targeted_flip,0.2,burst,1,0.984126984126984,0.6927374301675978,8.789354334030623e-05,0.01707779886148,robust_z + label_loss
+targeted_flip_b0.2_low_and_slow_s1.csv.gz,targeted_flip,0.2,low_and_slow,1,0.992063492063492,0.6830601092896175,9.268773661341384e-05,0.0208728652751423,robust_z + label_loss
+targeted_flip_b0.2_uniform_s1.csv.gz,targeted_flip,0.2,uniform,1,0.992063492063492,0.6127450980392157,0.0001262470895251,0.0626185958254269,robust_z + label_loss
+backdoor_b0.2_burst_s2.csv.gz,backdoor,0.2,burst,2,0.8015873015873016,0.5489130434782609,0.0001326393472226,0.0664136622390891,robust_z + label_loss
+backdoor_b0.2_low_and_slow_s2.csv.gz,backdoor,0.2,low_and_slow,2,0.6507936507936508,0.5189873417721519,0.000121452896252,0.0569259962049335,robust_z + label_loss
+backdoor_b0.2_uniform_s2.csv.gz,backdoor,0.2,uniform,2,0.6349206349206349,0.5925925925925926,8.789354334030623e-05,0.0151802656546489,robust_z + label_loss
+feature_noise_b0.2_burst_s2.csv.gz,feature_noise,0.2,burst,2,0.6746031746031746,0.5985915492957746,9.108967218904464e-05,0.01707779886148,robust_z + label_loss
+feature_noise_b0.2_low_and_slow_s2.csv.gz,feature_noise,0.2,low_and_slow,2,0.7380952380952381,0.6158940397350994,9.268773661341384e-05,0.0208728652751423,robust_z + label_loss
+feature_noise_b0.2_uniform_s2.csv.gz,feature_noise,0.2,uniform,2,0.7380952380952381,0.6326530612244898,8.629547891593702e-05,0.0151802656546489,robust_z + label_loss
+feature_scale_b0.2_burst_s2.csv.gz,feature_scale,0.2,burst,2,0.0238095238095238,0.0357142857142857,0.0001294432183739,0.0664136622390891,robust_z + label_loss
+feature_scale_b0.2_low_and_slow_s2.csv.gz,feature_scale,0.2,low_and_slow,2,0.0634920634920634,0.0952380952380952,0.000121452896252,0.0569259962049335,robust_z + label_loss
+feature_scale_b0.2_uniform_s2.csv.gz,feature_scale,0.2,uniform,2,0.0634920634920634,0.0952380952380952,0.000121452896252,0.0569259962049335,robust_z + label_loss
+feature_shift_b0.2_burst_s2.csv.gz,feature_shift,0.2,burst,2,1.0,0.6028708133971292,0.0001326393472226,0.0664136622390891,robust_z + label_loss
+feature_shift_b0.2_low_and_slow_s2.csv.gz,feature_shift,0.2,low_and_slow,2,1.0,0.6237623762376238,0.000121452896252,0.0569259962049335,robust_z + label_loss
+feature_shift_b0.2_uniform_s2.csv.gz,feature_shift,0.2,uniform,2,1.0,0.6961325966850829,8.789354334030623e-05,0.0151802656546489,robust_z + label_loss
+random_flip_b0.2_burst_s2.csv.gz,random_flip,0.2,burst,2,0.972927331257586,0.9993675803624668,0.0001366683001782,0.0620689655172413,robust_z + label_loss
+random_flip_b0.2_low_and_slow_s2.csv.gz,random_flip,0.2,low_and_slow,2,0.911253012472074,0.9987371668192992,0.0002557649617621,0.0441176470588235,robust_z + label_loss
+random_flip_b0.2_uniform_s2.csv.gz,random_flip,0.2,uniform,2,0.9222826182560204,0.9989139961132492,0.0002225740888617,0.0378071833648393,robust_z + label_loss
+targeted_flip_b0.2_burst_s2.csv.gz,targeted_flip,0.2,burst,2,0.9761904761904762,0.5970873786407767,0.0001326393472226,0.0664136622390891,robust_z + label_loss
+targeted_flip_b0.2_low_and_slow_s2.csv.gz,targeted_flip,0.2,low_and_slow,2,1.0,0.6237623762376238,0.000121452896252,0.0569259962049335,robust_z + label_loss
+targeted_flip_b0.2_uniform_s2.csv.gz,targeted_flip,0.2,uniform,2,0.9682539682539684,0.6892655367231638,8.789354334030623e-05,0.0151802656546489,robust_z + label_loss
+backdoor_b0.2_burst_s0.csv.gz,backdoor,0.2,burst,0,0.5,0.2107023411371237,0.0003771432041511,0.0683111954459203,"all three, no alarm"
+backdoor_b0.2_low_and_slow_s0.csv.gz,backdoor,0.2,low_and_slow,0,0.5793650793650794,0.2570422535211267,0.0003371915935419,0.0208728652751423,"all three, no alarm"
+backdoor_b0.2_uniform_s0.csv.gz,backdoor,0.2,uniform,0,0.5793650793650794,0.2409240924092409,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+feature_noise_b0.2_burst_s0.csv.gz,feature_noise,0.2,burst,0,1.0,0.3480662983425414,0.0003771432041511,0.0683111954459203,"all three, no alarm"
+feature_noise_b0.2_low_and_slow_s0.csv.gz,feature_noise,0.2,low_and_slow,0,0.7698412698412699,0.3149350649350649,0.0003371915935419,0.0208728652751423,"all three, no alarm"
+feature_noise_b0.2_uniform_s0.csv.gz,feature_noise,0.2,uniform,0,0.7777777777777778,0.3181818181818182,0.0003355935291175,0.0189753320683111,"all three, no alarm"
+feature_scale_b0.2_burst_s0.csv.gz,feature_scale,0.2,burst,0,0.0158730158730158,0.0084033613445378,0.0003771432041511,0.0683111954459203,"all three, no alarm"
+feature_scale_b0.2_low_and_slow_s0.csv.gz,feature_scale,0.2,low_and_slow,0,0.0396825396825396,0.0210084033613445,0.000372349010878,0.0626185958254269,"all three, no alarm"
+feature_scale_b0.2_uniform_s0.csv.gz,feature_scale,0.2,uniform,0,0.0634920634920634,0.0336134453781512,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+feature_shift_b0.2_burst_s0.csv.gz,feature_shift,0.2,burst,0,1.0,0.3480662983425414,0.0003771432041511,0.0683111954459203,"all three, no alarm"
+feature_shift_b0.2_low_and_slow_s0.csv.gz,feature_shift,0.2,low_and_slow,0,1.0,0.373887240356083,0.0003371915935419,0.0208728652751423,"all three, no alarm"
+feature_shift_b0.2_uniform_s0.csv.gz,feature_shift,0.2,uniform,0,1.0,0.3539325842696629,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+random_flip_b0.2_burst_s0.csv.gz,random_flip,0.2,burst,0,0.9733497515282116,0.9816644785863818,0.0040356275430115,0.5965217391304348,"all three, no alarm"
+random_flip_b0.2_low_and_slow_s0.csv.gz,random_flip,0.2,low_and_slow,0,0.6757816966445315,0.9901159793814432,0.0014974970128156,0.9223300970873788,"all three, no alarm"
+random_flip_b0.2_uniform_s0.csv.gz,random_flip,0.2,uniform,0,0.6731166717973526,0.9902694029657616,0.0014682108913133,0.931297709923664,"all three, no alarm"
+targeted_flip_b0.2_burst_s0.csv.gz,targeted_flip,0.2,burst,0,0.984126984126984,0.3444444444444444,0.0003771432041511,0.0683111954459203,"all three, no alarm"
+targeted_flip_b0.2_low_and_slow_s0.csv.gz,targeted_flip,0.2,low_and_slow,0,1.0,0.373887240356083,0.0003371915935419,0.0208728652751423,"all three, no alarm"
+targeted_flip_b0.2_uniform_s0.csv.gz,targeted_flip,0.2,uniform,0,0.992063492063492,0.352112676056338,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+backdoor_b0.2_burst_s1.csv.gz,backdoor,0.2,burst,1,0.492063492063492,0.2287822878228782,0.0003339954646931,0.01707779886148,"all three, no alarm"
+backdoor_b0.2_low_and_slow_s1.csv.gz,backdoor,0.2,low_and_slow,1,0.626984126984127,0.2714776632302405,0.0003387896579662,0.0208728652751423,"all three, no alarm"
+backdoor_b0.2_uniform_s1.csv.gz,backdoor,0.2,uniform,1,0.6190476190476191,0.2508038585209003,0.000372349010878,0.0626185958254269,"all three, no alarm"
+feature_noise_b0.2_burst_s1.csv.gz,feature_noise,0.2,burst,1,1.0,0.3761194029850746,0.0003339954646931,0.01707779886148,"all three, no alarm"
+feature_noise_b0.2_low_and_slow_s1.csv.gz,feature_noise,0.2,low_and_slow,1,0.8492063492063492,0.3364779874213836,0.0003371915935419,0.0208728652751423,"all three, no alarm"
+feature_noise_b0.2_uniform_s1.csv.gz,feature_noise,0.2,uniform,1,0.8095238095238095,0.3258785942492013,0.0003371915935419,0.0208728652751423,"all three, no alarm"
+feature_scale_b0.2_burst_s1.csv.gz,feature_scale,0.2,burst,1,0.0238095238095238,0.0126050420168067,0.0003755451397267,0.0664136622390891,"all three, no alarm"
+feature_scale_b0.2_low_and_slow_s1.csv.gz,feature_scale,0.2,low_and_slow,1,0.0555555555555555,0.0294117647058823,0.0003691528820292,0.0588235294117647,"all three, no alarm"
+feature_scale_b0.2_uniform_s1.csv.gz,feature_scale,0.2,uniform,1,0.0396825396825396,0.0210084033613445,0.000372349010878,0.0626185958254269,"all three, no alarm"
+feature_shift_b0.2_burst_s1.csv.gz,feature_shift,0.2,burst,1,1.0,0.3761194029850746,0.0003339954646931,0.01707779886148,"all three, no alarm"
+feature_shift_b0.2_low_and_slow_s1.csv.gz,feature_shift,0.2,low_and_slow,1,1.0,0.3727810650887574,0.0003387896579662,0.0208728652751423,"all three, no alarm"
+feature_shift_b0.2_uniform_s1.csv.gz,feature_shift,0.2,uniform,1,1.0,0.3509749303621169,0.000372349010878,0.0626185958254269,"all three, no alarm"
+random_flip_b0.2_burst_s1.csv.gz,random_flip,0.2,burst,1,0.9776769222650272,0.9897336811831644,0.0022511221443646,0.4833333333333333,"all three, no alarm"
+random_flip_b0.2_low_and_slow_s1.csv.gz,random_flip,0.2,low_and_slow,1,0.6745474695234577,0.9900979873223252,0.001497494089096,0.9255725190839694,"all three, no alarm"
+random_flip_b0.2_uniform_s1.csv.gz,random_flip,0.2,uniform,1,0.6715745773743558,0.9895285244032036,0.0015775426649147,0.9288321167883212,"all three, no alarm"
+targeted_flip_b0.2_burst_s1.csv.gz,targeted_flip,0.2,burst,1,0.984126984126984,0.3723723723723723,0.0003339954646931,0.01707779886148,"all three, no alarm"
+targeted_flip_b0.2_low_and_slow_s1.csv.gz,targeted_flip,0.2,low_and_slow,1,0.992063492063492,0.3709198813056379,0.0003387896579662,0.0208728652751423,"all three, no alarm"
+targeted_flip_b0.2_uniform_s1.csv.gz,targeted_flip,0.2,uniform,1,0.992063492063492,0.3491620111731843,0.000372349010878,0.0626185958254269,"all three, no alarm"
+backdoor_b0.2_burst_s2.csv.gz,backdoor,0.2,burst,2,0.8015873015873016,0.2988165680473373,0.0003787412685755,0.0664136622390891,"all three, no alarm"
+backdoor_b0.2_low_and_slow_s2.csv.gz,backdoor,0.2,low_and_slow,2,0.6587301587301587,0.2651757188498402,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+backdoor_b0.2_uniform_s2.csv.gz,backdoor,0.2,uniform,2,0.626984126984127,0.2743055555555556,0.0003339954646931,0.0151802656546489,"all three, no alarm"
+feature_noise_b0.2_burst_s2.csv.gz,feature_noise,0.2,burst,2,0.6746031746031746,0.2871621621621621,0.0003371915935419,0.01707779886148,"all three, no alarm"
+feature_noise_b0.2_low_and_slow_s2.csv.gz,feature_noise,0.2,low_and_slow,2,0.873015873015873,0.3416149068322981,0.0003387896579662,0.0208728652751423,"all three, no alarm"
+feature_noise_b0.2_uniform_s2.csv.gz,feature_noise,0.2,uniform,2,0.8412698412698413,0.3375796178343949,0.0003323974002687,0.0151802656546489,"all three, no alarm"
+feature_scale_b0.2_burst_s2.csv.gz,feature_scale,0.2,burst,2,0.0238095238095238,0.0126050420168067,0.0003755451397267,0.0664136622390891,"all three, no alarm"
+feature_scale_b0.2_low_and_slow_s2.csv.gz,feature_scale,0.2,low_and_slow,2,0.0634920634920634,0.0336134453781512,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+feature_scale_b0.2_uniform_s2.csv.gz,feature_scale,0.2,uniform,2,0.0634920634920634,0.0336134453781512,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+feature_shift_b0.2_burst_s2.csv.gz,feature_shift,0.2,burst,2,1.0,0.3471074380165289,0.0003787412685755,0.0664136622390891,"all three, no alarm"
+feature_shift_b0.2_low_and_slow_s2.csv.gz,feature_shift,0.2,low_and_slow,2,1.0,0.3539325842696629,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+feature_shift_b0.2_uniform_s2.csv.gz,feature_shift,0.2,uniform,2,1.0,0.3761194029850746,0.0003339954646931,0.0151802656546489,"all three, no alarm"
+random_flip_b0.2_burst_s2.csv.gz,random_flip,0.2,burst,2,0.8723943216000845,0.9899197572757396,0.0019719283311433,0.7879310344827586,"all three, no alarm"
+random_flip_b0.2_low_and_slow_s2.csv.gz,random_flip,0.2,low_and_slow,2,0.672735588509508,0.9889834234141044,0.0016634484535981,0.9246323529411764,"all three, no alarm"
+random_flip_b0.2_uniform_s2.csv.gz,random_flip,0.2,uniform,2,0.6737998487167308,0.9895883120406134,0.0015736378563381,0.9281663516068052,"all three, no alarm"
+targeted_flip_b0.2_burst_s2.csv.gz,targeted_flip,0.2,burst,2,0.9761904761904762,0.3416666666666667,0.0003787412685755,0.0664136622390891,"all three, no alarm"
+targeted_flip_b0.2_low_and_slow_s2.csv.gz,targeted_flip,0.2,low_and_slow,2,1.0,0.3539325842696629,0.0003675548176049,0.0569259962049335,"all three, no alarm"
+targeted_flip_b0.2_uniform_s2.csv.gz,targeted_flip,0.2,uniform,2,0.9682539682539684,0.3685800604229607,0.0003339954646931,0.0151802656546489,"all three, no alarm"
+backdoor_b0.2_burst_s0.csv.gz,backdoor,0.2,burst,0,0.5,0.2107023411371237,0.0003771432041511,0.0683111954459203,all three + alarm
+backdoor_b0.2_low_and_slow_s0.csv.gz,backdoor,0.2,low_and_slow,0,0.5793650793650794,0.2570422535211267,0.0003371915935419,0.0208728652751423,all three + alarm
+backdoor_b0.2_uniform_s0.csv.gz,backdoor,0.2,uniform,0,0.5793650793650794,0.2409240924092409,0.0003675548176049,0.0569259962049335,all three + alarm
+backdoor_b0.2_burst_s1.csv.gz,backdoor,0.2,burst,1,0.492063492063492,0.2287822878228782,0.0003339954646931,0.01707779886148,all three + alarm
+backdoor_b0.2_low_and_slow_s1.csv.gz,backdoor,0.2,low_and_slow,1,0.626984126984127,0.2714776632302405,0.0003387896579662,0.0208728652751423,all three + alarm
+backdoor_b0.2_uniform_s1.csv.gz,backdoor,0.2,uniform,1,0.6190476190476191,0.2508038585209003,0.000372349010878,0.0626185958254269,all three + alarm
+backdoor_b0.2_burst_s2.csv.gz,backdoor,0.2,burst,2,0.8015873015873016,0.2988165680473373,0.0003787412685755,0.0664136622390891,all three + alarm
+backdoor_b0.2_low_and_slow_s2.csv.gz,backdoor,0.2,low_and_slow,2,0.6587301587301587,0.2651757188498402,0.0003675548176049,0.0569259962049335,all three + alarm
+backdoor_b0.2_uniform_s2.csv.gz,backdoor,0.2,uniform,2,0.626984126984127,0.2743055555555556,0.0003339954646931,0.0151802656546489,all three + alarm
+feature_noise_b0.2_burst_s0.csv.gz,feature_noise,0.2,burst,0,1.0,0.3480662983425414,0.0003771432041511,0.0683111954459203,all three + alarm
+feature_noise_b0.2_low_and_slow_s0.csv.gz,feature_noise,0.2,low_and_slow,0,0.7698412698412699,0.3149350649350649,0.0003371915935419,0.0208728652751423,all three + alarm
+feature_noise_b0.2_uniform_s0.csv.gz,feature_noise,0.2,uniform,0,0.7777777777777778,0.3181818181818182,0.0003355935291175,0.0189753320683111,all three + alarm
+feature_noise_b0.2_burst_s1.csv.gz,feature_noise,0.2,burst,1,1.0,0.3761194029850746,0.0003339954646931,0.01707779886148,all three + alarm
+feature_noise_b0.2_low_and_slow_s1.csv.gz,feature_noise,0.2,low_and_slow,1,0.8492063492063492,0.3364779874213836,0.0003371915935419,0.0208728652751423,all three + alarm
+feature_noise_b0.2_uniform_s1.csv.gz,feature_noise,0.2,uniform,1,0.8095238095238095,0.3258785942492013,0.0003371915935419,0.0208728652751423,all three + alarm
+feature_noise_b0.2_burst_s2.csv.gz,feature_noise,0.2,burst,2,0.6746031746031746,0.2871621621621621,0.0003371915935419,0.01707779886148,all three + alarm
+feature_noise_b0.2_low_and_slow_s2.csv.gz,feature_noise,0.2,low_and_slow,2,0.873015873015873,0.3416149068322981,0.0003387896579662,0.0208728652751423,all three + alarm
+feature_noise_b0.2_uniform_s2.csv.gz,feature_noise,0.2,uniform,2,0.8412698412698413,0.3375796178343949,0.0003323974002687,0.0151802656546489,all three + alarm
+feature_scale_b0.2_burst_s0.csv.gz,feature_scale,0.2,burst,0,0.0158730158730158,0.0084033613445378,0.0003771432041511,0.0683111954459203,all three + alarm
+feature_scale_b0.2_low_and_slow_s0.csv.gz,feature_scale,0.2,low_and_slow,0,0.0396825396825396,0.0210084033613445,0.000372349010878,0.0626185958254269,all three + alarm
+feature_scale_b0.2_uniform_s0.csv.gz,feature_scale,0.2,uniform,0,0.0634920634920634,0.0336134453781512,0.0003675548176049,0.0569259962049335,all three + alarm
+feature_scale_b0.2_burst_s1.csv.gz,feature_scale,0.2,burst,1,0.0238095238095238,0.0126050420168067,0.0003755451397267,0.0664136622390891,all three + alarm
+feature_scale_b0.2_low_and_slow_s1.csv.gz,feature_scale,0.2,low_and_slow,1,0.0555555555555555,0.0294117647058823,0.0003691528820292,0.0588235294117647,all three + alarm
+feature_scale_b0.2_uniform_s1.csv.gz,feature_scale,0.2,uniform,1,0.0396825396825396,0.0210084033613445,0.000372349010878,0.0626185958254269,all three + alarm
+feature_scale_b0.2_burst_s2.csv.gz,feature_scale,0.2,burst,2,0.0238095238095238,0.0126050420168067,0.0003755451397267,0.0664136622390891,all three + alarm
+feature_scale_b0.2_low_and_slow_s2.csv.gz,feature_scale,0.2,low_and_slow,2,0.0634920634920634,0.0336134453781512,0.0003675548176049,0.0569259962049335,all three + alarm
+feature_scale_b0.2_uniform_s2.csv.gz,feature_scale,0.2,uniform,2,0.0634920634920634,0.0336134453781512,0.0003675548176049,0.0569259962049335,all three + alarm
+feature_shift_b0.2_burst_s0.csv.gz,feature_shift,0.2,burst,0,1.0,0.3480662983425414,0.0003771432041511,0.0683111954459203,all three + alarm
+feature_shift_b0.2_low_and_slow_s0.csv.gz,feature_shift,0.2,low_and_slow,0,1.0,0.373887240356083,0.0003371915935419,0.0208728652751423,all three + alarm
+feature_shift_b0.2_uniform_s0.csv.gz,feature_shift,0.2,uniform,0,1.0,0.3539325842696629,0.0003675548176049,0.0569259962049335,all three + alarm
+feature_shift_b0.2_burst_s1.csv.gz,feature_shift,0.2,burst,1,1.0,0.3761194029850746,0.0003339954646931,0.01707779886148,all three + alarm
+feature_shift_b0.2_low_and_slow_s1.csv.gz,feature_shift,0.2,low_and_slow,1,1.0,0.3727810650887574,0.0003387896579662,0.0208728652751423,all three + alarm
+feature_shift_b0.2_uniform_s1.csv.gz,feature_shift,0.2,uniform,1,1.0,0.3509749303621169,0.000372349010878,0.0626185958254269,all three + alarm
+feature_shift_b0.2_burst_s2.csv.gz,feature_shift,0.2,burst,2,1.0,0.3471074380165289,0.0003787412685755,0.0664136622390891,all three + alarm
+feature_shift_b0.2_low_and_slow_s2.csv.gz,feature_shift,0.2,low_and_slow,2,1.0,0.3539325842696629,0.0003675548176049,0.0569259962049335,all three + alarm
+feature_shift_b0.2_uniform_s2.csv.gz,feature_shift,0.2,uniform,2,1.0,0.3761194029850746,0.0003339954646931,0.0151802656546489,all three + alarm
+random_flip_b0.2_burst_s0.csv.gz,random_flip,0.2,burst,0,0.9984695896917192,0.9988473586034562,0.0002557654611197,0.017391304347826,all three + alarm
+random_flip_b0.2_low_and_slow_s0.csv.gz,random_flip,0.2,low_and_slow,0,0.912379612120146,0.9977780770266632,0.0004510062711348,0.029126213592233,all three + alarm
+random_flip_b0.2_uniform_s0.csv.gz,random_flip,0.2,uniform,0,0.919952504507674,0.99779632721202,0.0004510062711348,0.032442748091603,all three + alarm
+random_flip_b0.2_burst_s1.csv.gz,random_flip,0.2,burst,1,0.9988038067092372,0.9986632662035,0.0002967654518156,0.02,all three + alarm
+random_flip_b0.2_low_and_slow_s1.csv.gz,random_flip,0.2,low_and_slow,1,0.9160993544074444,0.9970229548369804,0.0006071977336491,0.0362595419847328,all three + alarm
+random_flip_b0.2_uniform_s1.csv.gz,random_flip,0.2,uniform,1,0.91651274473587,0.9969861362266426,0.0006150073508021,0.0383211678832116,all three + alarm
+random_flip_b0.2_burst_s2.csv.gz,random_flip,0.2,burst,2,0.972927331257586,0.9979610616914166,0.0004412433691469,0.0620689655172413,all three + alarm
+random_flip_b0.2_low_and_slow_s2.csv.gz,random_flip,0.2,low_and_slow,2,0.9112793990887822,0.9976216611781924,0.0004822438592004,0.0441176470588235,all three + alarm
+random_flip_b0.2_uniform_s2.csv.gz,random_flip,0.2,uniform,2,0.9222298450226044,0.9978207287711384,0.0004471005820117,0.0378071833648393,all three + alarm
+targeted_flip_b0.2_burst_s0.csv.gz,targeted_flip,0.2,burst,0,0.984126984126984,0.3444444444444444,0.0003771432041511,0.0683111954459203,all three + alarm
+targeted_flip_b0.2_low_and_slow_s0.csv.gz,targeted_flip,0.2,low_and_slow,0,1.0,0.373887240356083,0.0003371915935419,0.0208728652751423,all three + alarm
+targeted_flip_b0.2_uniform_s0.csv.gz,targeted_flip,0.2,uniform,0,0.992063492063492,0.352112676056338,0.0003675548176049,0.0569259962049335,all three + alarm
+targeted_flip_b0.2_burst_s1.csv.gz,targeted_flip,0.2,burst,1,0.984126984126984,0.3723723723723723,0.0003339954646931,0.01707779886148,all three + alarm
+targeted_flip_b0.2_low_and_slow_s1.csv.gz,targeted_flip,0.2,low_and_slow,1,0.992063492063492,0.3709198813056379,0.0003387896579662,0.0208728652751423,all three + alarm
+targeted_flip_b0.2_uniform_s1.csv.gz,targeted_flip,0.2,uniform,1,0.992063492063492,0.3491620111731843,0.000372349010878,0.0626185958254269,all three + alarm
+targeted_flip_b0.2_burst_s2.csv.gz,targeted_flip,0.2,burst,2,0.9761904761904762,0.3416666666666667,0.0003787412685755,0.0664136622390891,all three + alarm
+targeted_flip_b0.2_low_and_slow_s2.csv.gz,targeted_flip,0.2,low_and_slow,2,1.0,0.3539325842696629,0.0003675548176049,0.0569259962049335,all three + alarm
+targeted_flip_b0.2_uniform_s2.csv.gz,targeted_flip,0.2,uniform,2,0.9682539682539684,0.3685800604229607,0.0003339954646931,0.0151802656546489,all three + alarm

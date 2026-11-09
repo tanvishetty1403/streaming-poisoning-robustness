@@ -13,7 +13,8 @@ from helpers import flip_labels, make_clean, make_labeled, shift_rows
 def cfgx(**kw):
     """The real defense config, adapted to the small synthetic frames used here."""
     base = {**load_defense_cfg(), "label_col": "label", "time_col": "event_time", "min_ref": 200,
-            "ref_window": 2000, "label_min_ref": 500, "label_window": 5000, "bootstrap_first_window": False}
+            "ref_window": 2000, "label_min_ref": 500, "label_window": 5000, "bootstrap_first_window": False,
+            "mass_flag_frac": None}   # detector-mechanics tests flag whole windows on purpose; the guard has its own tests
     return {**base, **kw}
 
 
@@ -197,3 +198,35 @@ def test_label_detector_keeps_rare_fraud_rows_in_one_huge_window():
     st = L(label_window=20000, label_min_ref=2000, min_class=20, trusted_windows=1)
     run(st, df)
     assert st["detectors"][0].ready
+
+
+# ---------------- mass-flag guard (drift vs poison) ----------------
+def test_mass_flag_guard_accepts_a_stale_reference_window():
+    """A window whose legit rows are ALL far from the reference is drift, not poison: it must not be quarantined."""
+    for frac, expect_quarantined in ((None, 500), (0.15, 0)):
+        st = Z(class_conditional=False, mass_flag_frac=frac)
+        run(st, make_clean(1000, seed=0))
+        df, _ = shift_rows(make_clean(500, seed=3, start=5000), 1.0, 8)
+        df["label"] = 0
+        _, quar, _, _ = run(st, df)
+        assert len(quar) == expect_quarantined, (frac, len(quar))
+
+
+def test_mass_flag_guard_keeps_small_poison_quarantined():
+    st = Z(class_conditional=False, mass_flag_frac=0.15)
+    run(st, make_clean(1000, seed=0))
+    df, mask = shift_rows(make_clean(1000, seed=1, start=1000), 0.05, 8, seed=2)
+    df["label"] = 0
+    _, _, _, flagged = run(st, df)
+    assert (flagged & mask).sum() / mask.sum() >= 0.95
+
+
+def test_mass_flag_guard_lets_the_reference_recover():
+    """After the release the reference contains the new regime, so the NEXT window of that regime is clean."""
+    st = Z(class_conditional=False, mass_flag_frac=0.15, ref_window=600)
+    run(st, make_clean(1000, seed=0))
+    for k in range(3):
+        df, _ = shift_rows(make_clean(500, seed=10 + k, start=5000 + 500 * k), 1.0, 8)
+        df["label"] = 0
+        _, quar, _, _ = run(st, df)
+    assert len(quar) < 25
