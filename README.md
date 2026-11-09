@@ -43,14 +43,18 @@ The ground truth `is_poisoned` goes only to the evaluator; the defense never rec
 The offline loop (single process) and the Kafka consumers run the same `prepare_run` / `StreamRun` code, so they
 can only differ by transport.
 
-## Quick start (Python 3.11)
+## Quick start
+
+Verified on Windows with Python 3.14.6: 265 tests pass, the results notebook executes,
+and Kafka matches offline on a random-flip attack with defense enabled.
+`requirements-lock.txt` records the tested dependency versions.
 
 ```bash
 git clone https://github.com/tanvishetty1403/streaming-poisoning-robustness.git
 cd streaming-poisoning-robustness
 python3.11 -m venv .venv && source .venv/bin/activate      # Windows: py -3.11 -m venv .venv ; .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python -m pytest -q                                         # 263 tests
+python -m pytest -q                                         # 265 tests
 ```
 
 ### Data
